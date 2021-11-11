@@ -19,7 +19,7 @@ namespace RushAg.Server.Data
         {
         }
 
-        public virtual DbSet<TodoItem> TodoItem { get; set; } = null!;
+        public virtual DbSet<TodoItem> TodoItems { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
