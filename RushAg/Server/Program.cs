@@ -1,9 +1,12 @@
 using Microsoft.AspNetCore.ResponseCompression;
+using Microsoft.EntityFrameworkCore;
+using RushAg.Server.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
+builder.Services.AddDbContext<RushAgContext>(option =>
+    option.UseSqlServer(builder.Configuration.GetConnectionString("RushAgDb")));
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 
