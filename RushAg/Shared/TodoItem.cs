@@ -15,7 +15,7 @@ namespace RushAg.Shared
         [Required]
         public string Name { get; set; }
         [StringLength(500)]
-        public string? Description { get; set; }
+        public string Description { get; set; }
         [Display(Name = "Complete ?")]
         public bool? IsComplete { get; set; }
     }
