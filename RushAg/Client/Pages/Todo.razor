@@ -1,0 +1,17 @@
+﻿@page "/todo"
+@inject HttpClient Http
+
+<PageTitle>To Do</PageTitle>
+
+<TodoListView todoItems="@todoItems" />
+
+
+@code {
+    private List<TodoItem> todoItems = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        todoItems = await Http.GetFromJsonAsync<List<TodoItem>>("api/TodoItem");
+
+    }
+}

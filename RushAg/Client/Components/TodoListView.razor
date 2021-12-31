@@ -1,0 +1,17 @@
+﻿
+<h1>To Do List</h1>
+
+@foreach(var todo in todoItems)
+{
+<div class="shadow p-3 mb-3 bg-white rounded">
+    <h4>@todo.Name</h4>
+    <p>@todo.Description</p>
+</div>
+}
+
+
+@code {
+    [Parameter]
+    public List<TodoItem> todoItems { get;set; }
+
+}
