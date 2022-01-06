@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RushAg.Server.Data;
 
@@ -11,9 +12,10 @@ using RushAg.Server.Data;
 namespace RushAg.Server.Migrations
 {
     [DbContext(typeof(RushAgDbContext))]
-    partial class RushAgDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220101223149_IsComplete not nullable")]
+    partial class IsCompletenotnullable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -30,11 +32,15 @@ namespace RushAg.Server.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
 
-                    b.Property<DateTime?>("CompleteDate")
+                    b.Property<DateTime>("CompletDate")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime>("CreateDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
                     b.Property<bool>("IsComplete")
                         .HasColumnType("bit");
@@ -57,7 +63,7 @@ namespace RushAg.Server.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
 
-                    b.Property<DateTime?>("CompleteDate")
+                    b.Property<DateTime>("CompleteDate")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime>("CreateDate")

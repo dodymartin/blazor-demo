@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RushAg.Server.Data;
 
@@ -11,9 +12,10 @@ using RushAg.Server.Data;
 namespace RushAg.Server.Migrations
 {
     [DbContext(typeof(RushAgDbContext))]
-    partial class RushAgDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220104005500_Remove Description")]
+    partial class RemoveDescription
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

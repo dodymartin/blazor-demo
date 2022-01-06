@@ -9,6 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<RushAgDbContext>(option =>
     option.UseSqlServer(builder.Configuration.GetConnectionString("RushAgDb")));
 
+builder.Services.AddScoped<IDataRepository, DataRepository>();
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 

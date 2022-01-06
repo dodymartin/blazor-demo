@@ -13,7 +13,8 @@ public class DataRepository : IDataRepository
     }
     public TodoItem Add(TodoItem item)
     {
-        throw new NotImplementedException();
+        _db.TodoItems.Add(item);
+        return item;
     }
 
     public void Delete(TodoItem item)
@@ -33,7 +34,8 @@ public class DataRepository : IDataRepository
 
     public TodoItem Update(TodoItem item)
     {
-        throw new NotImplementedException();
+        _db.TodoItems.Update(item);
+        return item;
     }
 
     public bool Save()
