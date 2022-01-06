@@ -3,15 +3,115 @@
 
 <PageTitle>To Do</PageTitle>
 
-<TodoListView todoItems="@todoItems" />
+<h1>To Do List</h1>
 
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th scope="col"/>
+            <th scope="col">Name</th>
+            <th scope="col">Create Date</th>
+            <th scope="col"/>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach(var todo in todoNotCompleted)
+    {
+        <tr>
+            <td><input type="checkbox" checked="@todo.IsComplete" onchange="@(() => ToggleComplete(todo))"></td>
+            <td>@todo.Name</td>
+            <td>@todo.CreateDate</td>
+            <td><button class="btn btn-danger" onclick="@(() => DeleteTodo(todo))">Delete</button></td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+<h1>Completed</h1>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th scope="col"/>
+            <th scope="col">Name</th>
+            <th scope="col">Complete Date</th>
+            <th scope="col"/>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach(var todo in todoCompleted)
+    {
+        <tr>
+            <td><input type="checkbox" checked="@todo.IsComplete" onchange="@(() => ToggleComplete(todo))"></td>
+            <td>@todo.Name</td>
+            <td>@todo.CompleteDate</td>
+            <td><button class="btn btn-danger" onclick="@(() => DeleteTodo(todo))">Delete</button></td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+<div>
+    <TodoUpdateForm OnSave="AddTodo" />
+</div>
 
 @code {
     private List<TodoItem> todoItems = new();
+    private List<TodoItem> todoNotCompleted = new();
+    private List<TodoItem> todoCompleted = new();
+    private bool isAddMode = false;
+
+    private void ToggleAddMode()
+    {
+        isAddMode = !isAddMode;
+    }
+
+    private async Task GetTodos()
+    {
+        todoItems = await Http.GetFromJsonAsync<List<TodoItem>>("api/TodoItem") ?? new();
+        todoNotCompleted = todoItems.Where(x => !x.IsComplete).ToList();
+        todoCompleted = todoItems.Where(x => x.IsComplete).ToList();
+    }
 
     protected override async Task OnInitializedAsync()
     {
-        todoItems = await Http.GetFromJsonAsync<List<TodoItem>>("api/TodoItem");
 
+        await GetTodos();
+    }
+
+    private async void ToggleComplete(TodoItem todo)
+    {
+        todo.IsComplete = !todo.IsComplete;
+        if (todo.IsComplete)
+            todo.CompleteDate = DateTime.Now;
+        else
+            todo.CompleteDate = null;
+
+        await UpdateTodo(todo);
+    }
+
+    private async Task UpdateTodo(TodoItem todo)
+    {
+        var response = await Http.PutAsJsonAsync($"api/TodoItem/{todo.Id}", todo);
+
+        response.EnsureSuccessStatusCode();
+
+        await GetTodos();
+        StateHasChanged();
+    }
+
+    private async Task DeleteTodo(TodoItem todo)
+    {
+        var response = await Http.DeleteAsync($"api/TodoItem/{todo.Id}");
+        await GetTodos();
+        StateHasChanged();
+    }
+
+    private async Task AddTodo(TodoItem todo)
+    {
+        var response = await Http.PostAsJsonAsync($"api/TodoItem", todo);
+        response.EnsureSuccessStatusCode();
+
+        await GetTodos();
+        StateHasChanged();
     }
 }
