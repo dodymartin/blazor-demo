@@ -34,6 +34,11 @@ public class DataRepository : IDataRepository
 
     public TodoItem Update(TodoItem item)
     {
+        if (item.IsComplete)
+            item.CompleteDate = DateTime.Now;
+        else
+            item.CompleteDate = null;
+
         _db.TodoItems.Update(item);
         return item;
     }

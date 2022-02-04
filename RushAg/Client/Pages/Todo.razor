@@ -5,50 +5,55 @@
 
 <h1>To Do List</h1>
 
-<table class="table table-striped">
-    <thead>
+<TableView Items=todoNotCompleted TItem="TodoItem">
+    <TableHeading>
         <tr>
-            <th scope="col"/>
-            <th scope="col">Name</th>
-            <th scope="col">Create Date</th>
-            <th scope="col"/>
+            <th scope="col" style="width : 5%"/>
+            <th scope="col" style="width:70%">Name</th>
+            <th scope="col" style="width:20%">Create Date</th>
+            <th scope="col" style="width:5%"/>
         </tr>
-    </thead>
-    <tbody>
-    @foreach(var todo in todoNotCompleted)
-    {
+    </TableHeading>
+    <TableBody>
         <tr>
-            <td><input type="checkbox" checked="@todo.IsComplete" onchange="@(() => ToggleComplete(todo))"></td>
-            <td>@todo.Name</td>
-            <td>@todo.CreateDate</td>
-            <td><button class="btn btn-danger" onclick="@(() => DeleteTodo(todo))">Delete</button></td>
+            <td>
+                <div class="round">
+                    <input @key="context" type="checkbox" checked="@context.IsComplete" id="@context.Id" onchange="@(() => ToggleComplete(context))"/>
+                    <label for="@context.Id"></label>
+                </div>
+            </td>
+            <td>@context.Name</td>
+            <td>@context.CreateDate</td>
+            <td><button class="btn btn-danger"><i class="oi oi-trash" style="color:black" onclick="@(() => DeleteTodo(context))"/></button></td>
         </tr>
-    }
-    </tbody>
-</table>
+    </TableBody>
+</TableView>
 
 <h1>Completed</h1>
-<table class="table table-striped">
-    <thead>
+
+<TableView Items=todoCompleted TItem="TodoItem">
+    <TableHeading>
         <tr>
-            <th scope="col"/>
-            <th scope="col">Name</th>
-            <th scope="col">Complete Date</th>
-            <th scope="col"/>
+            <th scope="col" style="width : 5%"/>
+            <th scope="col" style="width:70%">Name</th>
+            <th scope="col" style="width:20%">Complete Date</th>
+            <th scope="col" style="width:5%"/>
         </tr>
-    </thead>
-    <tbody>
-    @foreach(var todo in todoCompleted)
-    {
+    </TableHeading>
+    <TableBody>
         <tr>
-            <td><input type="checkbox" checked="@todo.IsComplete" onchange="@(() => ToggleComplete(todo))"></td>
-            <td>@todo.Name</td>
-            <td>@todo.CompleteDate</td>
-            <td><button class="btn btn-danger" onclick="@(() => DeleteTodo(todo))">Delete</button></td>
+            <td>
+                <div class="round">
+                    <input @key="context" type="checkbox" checked="@context.IsComplete" id="@context.Id" onchange="@(() => ToggleComplete(context))"/>
+                    <label for="@context.Id"></label>
+                </div>
+            </td>
+            <td class="completed-name">@context.Name</td>
+            <td>@context.CompleteDate</td>
+            <td><button class="btn btn-danger"><i class="oi oi-trash" style="color:black" onclick="@(() => DeleteTodo(context))"/></button></td>
         </tr>
-    }
-    </tbody>
-</table>
+    </TableBody>
+</TableView>
 
 <div>
     <TodoUpdateForm OnSave="AddTodo" />
@@ -58,52 +63,36 @@
     private List<TodoItem> todoItems = new();
     private List<TodoItem> todoNotCompleted = new();
     private List<TodoItem> todoCompleted = new();
-    private bool isAddMode = false;
-
-    private void ToggleAddMode()
-    {
-        isAddMode = !isAddMode;
-    }
 
     private async Task GetTodos()
     {
         todoItems = await Http.GetFromJsonAsync<List<TodoItem>>("api/TodoItem") ?? new();
-        todoNotCompleted = todoItems.Where(x => !x.IsComplete).ToList();
-        todoCompleted = todoItems.Where(x => x.IsComplete).ToList();
+        SetLists();   
     }
 
     protected override async Task OnInitializedAsync()
     {
-
         await GetTodos();
     }
 
     private async void ToggleComplete(TodoItem todo)
     {
         todo.IsComplete = !todo.IsComplete;
-        if (todo.IsComplete)
-            todo.CompleteDate = DateTime.Now;
-        else
-            todo.CompleteDate = null;
-
         await UpdateTodo(todo);
     }
 
     private async Task UpdateTodo(TodoItem todo)
     {
         var response = await Http.PutAsJsonAsync($"api/TodoItem/{todo.Id}", todo);
-
         response.EnsureSuccessStatusCode();
 
         await GetTodos();
-        StateHasChanged();
     }
 
     private async Task DeleteTodo(TodoItem todo)
     {
         var response = await Http.DeleteAsync($"api/TodoItem/{todo.Id}");
         await GetTodos();
-        StateHasChanged();
     }
 
     private async Task AddTodo(TodoItem todo)
@@ -112,6 +101,12 @@
         response.EnsureSuccessStatusCode();
 
         await GetTodos();
+    }
+
+    private void SetLists()
+    {
+        todoNotCompleted = todoItems.Where(x => !x.IsComplete).ToList();
+        todoCompleted = todoItems.Where(x => x.IsComplete).ToList();
         StateHasChanged();
     }
 }

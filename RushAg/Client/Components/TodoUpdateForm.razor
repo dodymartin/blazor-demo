@@ -1,8 +1,7 @@
 ﻿<EditForm Model="@Todo" OnValidSubmit="SaveTodo">
     <DataAnnotationsValidator />
     <ValidationSummary />
-    <InputText id="name" class="form-control" type="text" @bind-Value="Todo.Name" placeholder="Add a task..."/>
-    <button type="submit" class="btn btn-primary mt-2" disabled="@(String.IsNullOrWhiteSpace(Todo.Name))">Save</button>
+    <InputText id="name" class="form-control" @bind-Value="Todo.Name" placeholder="Add a task..."/>
 </EditForm>
 
 @code {
