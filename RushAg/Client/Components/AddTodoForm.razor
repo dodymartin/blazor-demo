@@ -1,0 +1,18 @@
+﻿<EditForm Model="@Todo" OnValidSubmit="SaveTodo">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <InputText id="name" class="form-control" @bind-Value="Todo.Name" placeholder="Add a task..."/>
+</EditForm>
+
+@code {
+    [Parameter]
+    public TodoItem Todo { get; set; } = new();
+    [Parameter]
+    public EventCallback<TodoItem> OnSave { get; set; }
+
+    private void SaveTodo()
+    {
+        OnSave.InvokeAsync(Todo);
+        Todo = new();
+    }
+}

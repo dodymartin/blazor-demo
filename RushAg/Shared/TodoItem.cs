@@ -14,6 +14,8 @@ namespace RushAg.Shared
         [StringLength(150)]
         [Required]
         public string Name { get; set; }
+        [StringLength(500)]
+        public string Notes { get; set; }
         [Display(Name = "Complete ?")]
         public bool IsComplete { get; set; } = false;
         public DateTime? CompleteDate { get; set; }

@@ -1,7 +1,10 @@
 ﻿<EditForm Model="@Todo" OnValidSubmit="SaveTodo">
     <DataAnnotationsValidator />
     <ValidationSummary />
-    <InputText id="name" class="form-control" @bind-Value="Todo.Name" placeholder="Add a task..."/>
+    <InputText id="name" class="form-control mb-3" @bind-Value="Todo.Name"/>
+    <InputTextArea class="form-control mb-3" @bind-Value="Todo.Notes" />
+    <button class="btn btn-secondary" @onclick="Cancel">Cancel</button>
+    <button class="btn btn-success" @onclick="SaveTodo">Save</button>
 </EditForm>
 
 @code {
@@ -9,6 +12,8 @@
     public TodoItem Todo { get; set; } = new();
     [Parameter]
     public EventCallback<TodoItem> OnSave { get; set; }
+    [Parameter]
+    public EventCallback OnCancel { get; set; }
 
     private void SaveTodo()
     {
@@ -16,4 +21,9 @@
         Todo = new();
     }
 
+    private void Cancel()
+    {
+        OnCancel.InvokeAsync();
+        Todo = new();   
+    }
 }

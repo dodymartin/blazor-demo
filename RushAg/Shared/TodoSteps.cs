@@ -21,7 +21,7 @@ namespace RushAg.Shared
         public DateTime? CompleteDate { get; set; }
         public DateTime CreateDate { get; set; } = DateTime.Now;
 
-        public long TodoId { get; set; }
+        public long TodoItemId { get; set; }
         public TodoItem TodoItem { get; set; }
     }
 }
