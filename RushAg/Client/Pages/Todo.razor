@@ -3,77 +3,79 @@
 
 <PageTitle>To Do</PageTitle>
 
-<div class="main">
-    <h1>To Do List</h1>
+<div class="d-flex">
+    <div class="d-flex flex-column flex-fill">
+        <h3>To Do List</h3>
+        <TableView Items=state.TodoNotCompleted TItem="TodoItem">
+            <TableHeading>
+                <tr>
+                    <th scope="col" style="width : 5%" />
+                    <th scope="col" style="width:70%">Name</th>
+                    <th scope="col" style="width:20%">Create Date</th>
+                    <th scope="col" style="width:5%" />
+                </tr>
+            </TableHeading>
+            <TableBody>
+                <tr onclick=@(() => SetCurrentTodo(context))>
+                    <td>
+                        <div class="round">
+                            <input @key="context" type="checkbox" checked="@context.IsComplete" id="@context.Id" onchange="@(() => state.ToggleComplete(context))" />
+                            <label for="@context.Id"></label>
+                        </div>
+                    </td>
+                    <td>@context.Name</td>
+                    <td>@context.CreateDate</td>
+                    <td><button class="btn btn-danger"><i class="oi oi-trash" style="color:black" onclick="@(() => state.DeleteTodo(context))" /></button></td>
+                </tr>
+            </TableBody>
+        </TableView>
 
-    <TableView Items=state.TodoNotCompleted TItem="TodoItem">
-        <TableHeading>
-            <tr>
-                <th scope="col" style="width : 5%"/>
-                <th scope="col" style="width:70%">Name</th>
-                <th scope="col" style="width:20%">Create Date</th>
-                <th scope="col" style="width:5%"/>
-            </tr>
-        </TableHeading>
-        <TableBody>
-            <tr onclick=@(() => SetCurrentTodo(context))>
-                <td>
-                    <div class="round">
-                        <input @key="context" type="checkbox" checked="@context.IsComplete" id="@context.Id" onchange="@(() => state.ToggleComplete(context))"/>
-                        <label for="@context.Id"></label>
-                    </div>
-                </td>
-                <td>@context.Name</td>
-                <td>@context.CreateDate</td>
-                <td><button class="btn btn-danger"><i class="oi oi-trash" style="color:black" onclick="@(() => state.DeleteTodo(context))"/></button></td>
-            </tr>
-        </TableBody>
-    </TableView>
+        <button class="btn btn-primary m-2" type="button" data-bs-toggle="collapse" data-bs-target="#complete" aria-expanded="false" aria-controls="complete">> Completed</button>
+        <div class="collapse" id="complete">
+            <TableView Items=state.TodoCompleted TItem="TodoItem">
+                <TableHeading>
+                    <tr>
+                        <th scope="col" style="width : 5%" />
+                        <th scope="col" style="width:70%">Name</th>
+                        <th scope="col" style="width:20%">Complete Date</th>
+                        <th scope="col" style="width:5%" />
+                    </tr>
+                </TableHeading>
+                <TableBody>
+                    <tr onclick=@(() => SetCurrentTodo(context))>
+                        <td>
+                            <div class="round">
+                                <input @key="context" type="checkbox" checked="@context.IsComplete" id="@context.Id" onchange="@(() => state.ToggleComplete(context))" />
+                                <label for="@context.Id"></label>
+                            </div>
+                        </td>
+                        <td class="completed-name">@context.Name</td>
+                        <td>@context.CompleteDate</td>
+                        <td><button class="btn btn-danger"><i class="oi oi-trash" style="color:black" onclick="@(() => state.DeleteTodo(context))" /></button></td>
+                    </tr>
+                </TableBody>
+            </TableView>
+        </div>
 
-    <h1>Completed</h1>
-
-    <TableView Items=state.TodoCompleted TItem="TodoItem">
-        <TableHeading>
-            <tr>
-                <th scope="col" style="width : 5%"/>
-                <th scope="col" style="width:70%">Name</th>
-                <th scope="col" style="width:20%">Complete Date</th>
-                <th scope="col" style="width:5%"/>
-            </tr>
-        </TableHeading>
-        <TableBody>
-            <tr onclick=@(() => SetCurrentTodo(context))>
-                <td>
-                    <div class="round">
-                        <input @key="context" type="checkbox" checked="@context.IsComplete" id="@context.Id" onchange="@(() => state.ToggleComplete(context))"/>
-                        <label for="@context.Id"></label>
-                    </div>
-                </td>
-                <td class="completed-name">@context.Name</td>
-                <td>@context.CompleteDate</td>
-                <td><button class="btn btn-danger"><i class="oi oi-trash" style="color:black" onclick="@(() => state.DeleteTodo(context))"/></button></td>
-            </tr>
-        </TableBody>
-    </TableView>
-
-    <div>
-        <AddTodoForm OnSave="state.AddTodo" />
+        <div>
+            <AddTodoForm OnSave="state.AddTodo" />
+        </div>
     </div>
-</div>
-
-<div class="rightbar">
-    @if (currentTodo != null)
+    @if (state.CurrentTodo != null)
     {
-        <TodoUpdateForm
-            Todo="currentTodo"
-            OnCancel="CancelUpdate"
-            OnSave="state.UpdateTodo" />
+        <div class="d-flex flex-column flex-lg-fill p-2 m-2 border">
+
+            <TodoUpdateForm Todo="state.CurrentTodo"
+                        OnCancel="CancelUpdate"
+                        OnSave="state.UpdateTodo" />
+
+        </div>
     }
 </div>
 
-@code {
 
-    private TodoItem? currentTodo = null;
+
+@code {
 
     protected override async Task OnInitializedAsync()
     {
@@ -83,13 +85,13 @@
 
     private void CancelUpdate()
     {
-        currentTodo = null;
+        state.CurrentTodo = null;
         StateHasChanged();
     }
 
     private void SetCurrentTodo(TodoItem todo)
     {
-        currentTodo = todo;
+        state.CurrentTodo = todo;
         StateHasChanged();
     }
 }

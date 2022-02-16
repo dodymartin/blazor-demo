@@ -11,6 +11,7 @@ public class AppState
     private List<TodoItem> _todoItems = new();
     public List<TodoItem> TodoNotCompleted = new();
     public List<TodoItem> TodoCompleted = new();
+    public TodoItem? CurrentTodo = null;
 
     public AppState(HttpClient http)
     {
@@ -41,11 +42,15 @@ public class AppState
         var response = await _httpClient.PutAsJsonAsync($"api/TodoItem/{todo.Id}", todo);
         response.EnsureSuccessStatusCode();
 
+        CurrentTodo = null;
         await GetTodos();
     }
 
     public async Task DeleteTodo(TodoItem todo)
     {
+        if (todo.Id == CurrentTodo?.Id)
+            CurrentTodo = null;
+
         var response = await _httpClient.DeleteAsync($"api/TodoItem/{todo.Id}");
         await GetTodos();
     }

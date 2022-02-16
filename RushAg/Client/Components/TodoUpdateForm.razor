@@ -1,8 +1,10 @@
 ﻿<EditForm Model="@Todo" OnValidSubmit="SaveTodo">
     <DataAnnotationsValidator />
     <ValidationSummary />
-    <InputText id="name" class="form-control mb-3" @bind-Value="Todo.Name"/>
-    <InputTextArea class="form-control mb-3" @bind-Value="Todo.Notes" />
+    <label for="name">Name:</label>
+    <InputTextArea id="name" rows=4 class="form-control mb-3" @bind-Value="Todo.Name"/>
+    <label for="description">Description:</label>
+    <InputTextArea id="description" rows="5" class="form-control mb-3" @bind-Value="Todo.Notes" />
     <button class="btn btn-secondary" @onclick="Cancel">Cancel</button>
     <button class="btn btn-success" @onclick="SaveTodo">Save</button>
 </EditForm>
