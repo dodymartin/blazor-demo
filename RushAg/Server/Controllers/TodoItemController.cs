@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using RushAg.Server.Data;
+using Newtonsoft.Json;
+using RushAg.Infrastructure.Data;
 using RushAg.Shared;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -19,7 +20,7 @@ namespace RushAg.Server.Controllers
 
         // GET: api/<TodoItemController>
         [HttpGet]
-        public ActionResult<IEnumerable<TodoItem>> Get()
+        public ActionResult<IEnumerable<TodoItemDto>> Get()
         {
             var returnValue = _repository.GetAll();
             return Ok(returnValue);
@@ -27,7 +28,7 @@ namespace RushAg.Server.Controllers
 
         // GET api/<TodoItemController>/5
         [HttpGet("{id}")]
-        public ActionResult<TodoItem> Get(int id)
+        public ActionResult<TodoItemDto> Get(int id)
         {
             var returnValue = _repository.GetById(id);
             if (returnValue == null)
@@ -37,33 +38,34 @@ namespace RushAg.Server.Controllers
         }
 
         // POST api/<TodoItemController>
-        [HttpPost]
-        public ActionResult<TodoItem> Post([FromBody] TodoItem todoItem)
-        {
-            if (todoItem == null)
-                return BadRequest();
+        //[HttpPost]
+        //public ActionResult<TodoItemDto> Post([FromBody] TodoItemDto todoItem)
+        //{
+        //    if (todoItem == null)
+        //        return BadRequest();
 
-            var newTodoItem = _repository.Add(todoItem);
-            if (!_repository.Save())
-                throw new Exception("Error saving new TodoItem");
+        //    var newTodoItem = _repository.Add(todoItem);
+        //    if (!_repository.Save())
+        //        throw new Exception("Error saving new TodoItem");
 
-            return Ok(newTodoItem);
-        }
+        //    return Ok(newTodoItem);
+        //}
 
         // PUT api/<TodoItemController>/5
-        [HttpPut("{id}")]
-        public ActionResult<TodoItem> Put(int id, [FromBody] TodoItem todoItem)
-        {
-            if (todoItem == null)
-                return BadRequest();
+        //[HttpPut("{id}")]
+        //public ActionResult<TodoItemDto> Put(int id, [FromBody] object todoItem)
+        //{
+        //    var result = JsonConvert.DeserializeObject<TodoItemDto>(todoItem.ToString());
+        //    if (todoItem == null)
+        //        return BadRequest();
 
-            var updatedTodo = _repository.Update(todoItem);
+        //    //var updatedTodo = _repository.Update(result);
 
-            if (!_repository.Save())
-                throw new Exception("Error updating TodoItem");
+        //    if (!_repository.Save())
+        //        throw new Exception("Error updating TodoItem");
 
-            return Ok(updatedTodo);
-        }
+        //    return Ok(updatedTodo);
+        //}
 
         // DELETE api/<TodoItemController>/5
         [HttpDelete("{id}")]

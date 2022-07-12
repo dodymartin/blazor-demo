@@ -1,4 +1,6 @@
-﻿<EditForm Model="@Todo" OnValidSubmit="SaveTodo">
+﻿@using RushAg.Client.ViewModels
+
+<EditForm Model="@Todo" OnValidSubmit="SaveTodo">
     <DataAnnotationsValidator />
     <ValidationSummary />
     <InputText id="name" class="form-control" @bind-Value="Todo.Name" placeholder="Add a task..."/>
@@ -6,9 +8,9 @@
 
 @code {
     [Parameter]
-    public TodoItem Todo { get; set; } = new();
+    public TodoItemViewModel Todo { get; set; } = new();
     [Parameter]
-    public EventCallback<TodoItem> OnSave { get; set; }
+    public EventCallback<TodoItemViewModel> OnSave { get; set; }
 
     private void SaveTodo()
     {

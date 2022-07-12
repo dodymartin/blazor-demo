@@ -1,4 +1,4 @@
-﻿using RushAg.Shared;
+﻿using RushAg.Client.ViewModels;
 using System.Net.Http.Json;
 
 namespace RushAg.Client.Services;
@@ -8,10 +8,11 @@ public class AppState
     public event Action OnChange;
     private readonly HttpClient _httpClient;
 
-    private List<TodoItem> _todoItems = new();
-    public List<TodoItem> TodoNotCompleted = new();
-    public List<TodoItem> TodoCompleted = new();
-    public TodoItem? CurrentTodo = null;
+    private List<TodoItemViewModel> _todoItems = new();
+    public List<TodoItemViewModel> TodoNotCompleted = new();
+    public List<TodoItemViewModel> TodoCompleted = new();
+    public TodoItemViewModel? CurrentTodo = null;
+    public bool IsLoading = true;
 
     public AppState(HttpClient http)
     {
@@ -20,8 +21,9 @@ public class AppState
 
     public async Task GetTodos()
     {
-        _todoItems = await _httpClient.GetFromJsonAsync<List<TodoItem>>("api/TodoItem") ?? new();
+        _todoItems = await _httpClient.GetFromJsonAsync<List<TodoItemViewModel>>("api/TodoItem") ?? new();
         SetLists();
+        IsLoading = false;
     }
 
     private void SetLists()
@@ -31,31 +33,31 @@ public class AppState
         NotifyStateChanged();
     }
 
-    public async void ToggleComplete(TodoItem todo)
+    public async void ToggleComplete(TodoItemViewModel todo)
     {
         todo.IsComplete = !todo.IsComplete;
         await UpdateTodo(todo);
     }
 
-    public async Task UpdateTodo(TodoItem todo)
+    public async Task UpdateTodo(TodoItemViewModel todo)
     {
-        var response = await _httpClient.PutAsJsonAsync($"api/TodoItem/{todo.Id}", todo);
+        var response = await _httpClient.PutAsJsonAsync($"api/TodoItem/{todo.TodoItemId}", todo);
         response.EnsureSuccessStatusCode();
 
         CurrentTodo = null;
         await GetTodos();
     }
 
-    public async Task DeleteTodo(TodoItem todo)
+    public async Task DeleteTodo(TodoItemViewModel todo)
     {
-        if (todo.Id == CurrentTodo?.Id)
+        if (todo.TodoItemId == CurrentTodo?.TodoItemId)
             CurrentTodo = null;
 
-        var response = await _httpClient.DeleteAsync($"api/TodoItem/{todo.Id}");
+        var response = await _httpClient.DeleteAsync($"api/TodoItem/{todo.TodoItemId}");
         await GetTodos();
     }
 
-    public async Task AddTodo(TodoItem todo)
+    public async Task AddTodo(TodoItemViewModel todo)
     {
         var response = await _httpClient.PostAsJsonAsync($"api/TodoItem", todo);
         response.EnsureSuccessStatusCode();
