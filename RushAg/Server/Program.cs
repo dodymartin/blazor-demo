@@ -11,7 +11,7 @@ builder.Services.AddRazorPages();
 var connectionString = builder.Configuration.GetConnectionString("RushAgDb");
 builder.Services.AddDbContext(connectionString);
 
-builder.Services.AddScoped<IDataRepository, DataRepository>();
+builder.Services.AddScoped(typeof(IRepositoryBase<>), typeof(Repository<>));
 
 
 var app = builder.Build();

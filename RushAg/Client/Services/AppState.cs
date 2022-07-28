@@ -1,4 +1,5 @@
 ﻿using RushAg.Client.ViewModels;
+using RushAg.Shared;
 using System.Net.Http.Json;
 
 namespace RushAg.Client.Services;
@@ -35,16 +36,31 @@ public class AppState
 
     public async void ToggleComplete(TodoItemViewModel todo)
     {
-        todo.IsComplete = !todo.IsComplete;
-        await UpdateTodo(todo);
+        try
+        {
+            var request = new ToggleTodoItemDto() { IsComplete = !todo.IsComplete };
+            var response = await _httpClient.PutAsJsonAsync($"api/TodoItem/toggle/{todo.TodoItemId}", request);
+            response.EnsureSuccessStatusCode();
+
+            await GetTodos();
+        }
+        catch(Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
     }
 
     public async Task UpdateTodo(TodoItemViewModel todo)
     {
-        var response = await _httpClient.PutAsJsonAsync($"api/TodoItem/{todo.TodoItemId}", todo);
+        var request = new UpdateTodoItemDto()
+        {
+            Name = todo.Name,
+            Notes = todo.Notes
+        };
+
+        var response = await _httpClient.PutAsJsonAsync($"api/TodoItem/{todo.TodoItemId}", request);
         response.EnsureSuccessStatusCode();
 
-        CurrentTodo = null;
         await GetTodos();
     }
 
@@ -54,12 +70,19 @@ public class AppState
             CurrentTodo = null;
 
         var response = await _httpClient.DeleteAsync($"api/TodoItem/{todo.TodoItemId}");
+        response.EnsureSuccessStatusCode();
+
         await GetTodos();
     }
 
     public async Task AddTodo(TodoItemViewModel todo)
     {
-        var response = await _httpClient.PostAsJsonAsync($"api/TodoItem", todo);
+        var request = new CreateTodoItemDto
+        {
+            Name = todo.Name
+        };
+
+        var response = await _httpClient.PostAsJsonAsync($"api/TodoItem", request);
         response.EnsureSuccessStatusCode();
 
         await GetTodos();

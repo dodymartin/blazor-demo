@@ -12,6 +12,8 @@ namespace RushAg.Client.ViewModels
         public string Name { get; set; }
         public string Notes { get; set; }
         public bool IsComplete { get; set; } = false;
+        public DateTime CreateDate { get; set; }
+        public DateTime? CompleteDate { get; set; }
 
         public List<TodoStepViewModel> Steps { get; set; }
     }

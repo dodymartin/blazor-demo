@@ -15,4 +15,20 @@ namespace RushAg.Shared
         
         public List<TodoStepDto> Steps { get; set; }
     }
+
+    public class CreateTodoItemDto
+    {
+        public string Name { get; set; }
+    }
+
+    public class UpdateTodoItemDto
+    {
+        public string Name { get; set; }
+        public string Notes { get; set; }
+    }
+
+    public class ToggleTodoItemDto
+    {
+        public bool IsComplete { get; set; }
+    }
 }

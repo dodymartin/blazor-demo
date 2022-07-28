@@ -12,7 +12,7 @@ else
     <div class="d-flex">
         <div class="d-flex flex-column flex-fill">
             <h3>To Do List</h3>
-            <TableView Items=state.TodoNotCompleted TItem="TodoItemViewModel">
+            <TableView Items="@state.TodoNotCompleted" Context="todo" TItem="TodoItemViewModel">
                 <TableHeading>
                     <tr>
                         <th scope="col" style="width : 5%" />
@@ -25,20 +25,20 @@ else
                     <tr>
                         <td>
                             <div class="round">
-                                <input @key="context" type="checkbox" checked="@context.IsComplete" id="@context.TodoItemId" onchange="@(() => state.ToggleComplete(context))" />
-                                <label for="@context.TodoItemId"></label>
+                                <input @key="todo" type="checkbox" checked="@todo.IsComplete" id="@todo.TodoItemId" onchange="@(() => state.ToggleComplete(todo))" />
+                                <label for="@todo.TodoItemId"></label>
                             </div>
                         </td>
-                        <td onclick=@(() => SetCurrentTodo(context))>@context.Name</td>
-                        @*<td onclick=@(() => SetCurrentTodo(context))>@context.CreateDate</td>*@
-                        <td><button class="btn btn-danger"><i class="oi oi-trash" style="color:black" onclick="@(() => state.DeleteTodo(context))" /></button></td>
+                        <td onclick=@(() => SetCurrentTodo(todo))>@todo.Name</td>
+                        <td onclick=@(() => SetCurrentTodo(todo))>@todo.CreateDate</td>
+                        <td><button class="btn btn-danger"><i class="oi oi-trash" style="color:black" onclick="@(() => state.DeleteTodo(todo))" /></button></td>
                     </tr>
                 </TableBody>
             </TableView>
 
             <button class="btn btn-primary col-1 m-3" type="button" data-bs-toggle="collapse" data-bs-target="#complete" aria-expanded="false" aria-controls="complete">> Completed</button>
             <div class="collapse" id="complete">
-                <TableView Items=state.TodoCompleted TItem="TodoItemViewModel">
+                <TableView Items="@state.TodoCompleted" Context="todo">
                     <TableHeading>
                         <tr>
                             <th scope="col" style="width : 5%" />
@@ -48,17 +48,17 @@ else
                         </tr>
                     </TableHeading>
                     <TableBody>
-                        @*<tr>
+                        <tr>
                             <td>
                                 <div class="round">
-                                    @*<input @key="context" type="checkbox" checked="@context.IsComplete" id="@context.TodoItemId" onchange="@(() => state.ToggleComplete(context))" />
-                                    <label for="@context.TodoItemId"></label>
+                                    <input @key="todo" type="checkbox" checked="@todo.IsComplete" id="@todo.TodoItemId" onchange="@(() => state.ToggleComplete(todo))" />
+                                    <label for="@todo.TodoItemId"></label>
                                 </div>
                             </td>
-                            <td class="completed-name">@context.Name</td>
-                            <td>@context.CompleteDate</td>
-                            <td><button class="btn btn-danger"><i class="oi oi-trash" style="color:black" onclick="@(() => state.DeleteTodo(context))" /></button></td>
-                        </tr>*@
+                            <td class="completed-name">@todo.Name</td>
+                            <td>@todo.CompleteDate</td>
+                            <td><button class="btn btn-danger"><i class="oi oi-trash" style="color:black" onclick="@(() => state.DeleteTodo(todo))" /></button></td>
+                        </tr>
                     </TableBody>
                 </TableView>
             </div>
