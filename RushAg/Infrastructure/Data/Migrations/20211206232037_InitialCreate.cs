@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace RushAg.Server.Migrations
+namespace RushAg.Infrastructure.Data.Migrations
 {
     public partial class InitialCreate : Migration
     {
