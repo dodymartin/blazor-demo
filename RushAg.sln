@@ -14,6 +14,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RushAg.Shared", "RushAg\Sha
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RushAg.Infrastructure", "RushAg\Infrastructure\RushAg.Infrastructure.csproj", "{ADDB8C22-5B1B-457B-9581-AB6C9F0231B7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RushAg.Core", "RushAg.Core\RushAg.Core.csproj", "{7B35C74F-77DA-4710-9FCC-514E2F251F2D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -36,6 +38,10 @@ Global
 		{ADDB8C22-5B1B-457B-9581-AB6C9F0231B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ADDB8C22-5B1B-457B-9581-AB6C9F0231B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ADDB8C22-5B1B-457B-9581-AB6C9F0231B7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7B35C74F-77DA-4710-9FCC-514E2F251F2D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7B35C74F-77DA-4710-9FCC-514E2F251F2D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7B35C74F-77DA-4710-9FCC-514E2F251F2D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7B35C74F-77DA-4710-9FCC-514E2F251F2D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

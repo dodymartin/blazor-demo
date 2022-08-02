@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using RushAg.Infrastructure;
+using RushAg.Core.Entities;
 using RushAg.Infrastructure.Data;
 using RushAg.Shared;
 
@@ -81,8 +81,7 @@ namespace RushAg.Server.Controllers
                 if (toUpdate == null)
                     return NotFound();
 
-                toUpdate.Name = todoItem.Name;
-                toUpdate.Notes = todoItem.Notes;
+                toUpdate.UpdateStep(todoItem.Name, todoItem.Notes);
 
                 var updatedTodo = await _repository.Update(toUpdate);
 
@@ -108,7 +107,7 @@ namespace RushAg.Server.Controllers
                 if (toUpdate == null)
                     return NotFound();
 
-                toUpdate.IsComplete = toggleTodoItem.IsComplete;
+                toUpdate.SetIsComplete(toggleTodoItem.IsComplete);
 
                 var updatedTodo = await _repository.Update(toUpdate);
 
@@ -120,6 +119,25 @@ namespace RushAg.Server.Controllers
                 Console.WriteLine(ex.ToString());
                 return BadRequest();
             }
+        }
+
+        //PUT api/step/5
+        [HttpPut("step/{id}")]
+        public async Task<ActionResult<TodoStepDto>> Put(int id, [FromBody] CreateTodoStepDto createTodoStep)
+        {
+            if (createTodoStep == null)
+                return BadRequest();
+
+            var parentItem = await _repository.GetById(id);
+            if (parentItem == null)
+                return NotFound();
+
+            var step = new TodoStep(createTodoStep.Name);
+            parentItem.AddStep(step);
+
+            var updatedTodo = await _repository.Update(parentItem);
+
+            return Ok(updatedTodo);
         }
 
         // DELETE api/<TodoItemController>/5

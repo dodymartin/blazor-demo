@@ -13,6 +13,9 @@ namespace RushAg.Shared
         public string Notes { get; set; }
         public bool IsComplete { get; set; } = false;
         
+        public DateTime? CompleteDate { get; set; }
+        public DateTime CreateDate { get; set; }
+        
         public List<TodoStepDto> Steps { get; set; }
     }
 

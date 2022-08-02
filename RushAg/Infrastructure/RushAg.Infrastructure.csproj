@@ -15,6 +15,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <ProjectReference Include="..\..\RushAg.Core\RushAg.Core.csproj" />
 	  <ProjectReference Include="..\Shared\RushAg.Shared.csproj" />
 	</ItemGroup>
 

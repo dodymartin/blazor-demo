@@ -1,23 +1,26 @@
-﻿<EditForm Model="@TodoStep" OnValidSubmit="SaveTodo">
+﻿<EditForm Model="@todoStep" OnValidSubmit="SaveTodo">
     <DataAnnotationsValidator />
     <ValidationSummary />
-    <InputText id="name" class="form-control" @bind-Value="TodoStep.StepName" placeholder="Add a step..." />
+    <InputText id="name" class="form-control" @bind-Value="todoStep.Name" placeholder="Add a step..." />
 </EditForm>
 
 @code {
     [Parameter]
-    public TodoStepViewModel TodoStep { get; set; } = default!;
+    public TodoItemDto TodoItem { get; set; } = default!;
     [Parameter]
-    public TodoItemViewModel TodoItem { get; set; } = default!;
-    [Parameter]
-    public EventCallback<TodoStepViewModel> OnSave { get; set; }
+    public EventCallback<CreateTodoStepDto> OnSave { get; set; }
 
-    private TodoStepViewModel todoStep = new();
+    private TodoStepDto todoStep = new();
 
     private void SaveTodo()
     {
-        TodoItem.Steps.Add(TodoStep);
-        OnSave.InvokeAsync(TodoStep);
-        TodoStep = new();
+        TodoItem.Steps.Add(todoStep);
+        var createTodoStep = new CreateTodoStepDto()
+        {
+            Name = todoStep.Name,
+            ParentId = TodoItem.TodoItemId
+        };
+        OnSave.InvokeAsync(createTodoStep);
+        todoStep = new();
     }
 }
