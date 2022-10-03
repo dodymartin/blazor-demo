@@ -12,9 +12,9 @@ namespace RushAg.Server.Controllers
     [ApiController]
     public class TodoItemController : ControllerBase
     {
-        private readonly IRepositoryBase<TodoItem> _repository;
+        private readonly Repository _repository;
 
-        public TodoItemController(IRepositoryBase<TodoItem> repository)
+        public TodoItemController(Repository repository)
         {
             _repository = repository;
         }
