@@ -19,6 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\RushAg.Core\RushAg.Core.csproj" />
     <ProjectReference Include="..\Client\RushAg.Client.csproj" />
     <ProjectReference Include="..\Infrastructure\RushAg.Infrastructure.csproj" />
     <ProjectReference Include="..\Shared\RushAg.Shared.csproj" />

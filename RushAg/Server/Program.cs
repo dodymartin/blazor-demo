@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using RushAg.Infrastructure.Data;
 using RushAg.Infrastructure;
+using RushAg.Core.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,7 +12,7 @@ builder.Services.AddRazorPages();
 var connectionString = builder.Configuration.GetConnectionString("RushAgDb");
 builder.Services.AddDbContext(connectionString);
 
-builder.Services.AddScoped(typeof(IRepositoryBase<>), typeof(Repository<>));
+builder.Services.AddScoped<IRepository,Repository>();
 
 
 var app = builder.Build();

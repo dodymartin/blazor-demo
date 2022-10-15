@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
-using RushAg.Infrastructure;
-using RushAg.Infrastructure.Data;
+using RushAg.Core.Entities;
+using RushAg.Core.Interfaces;
 using RushAg.Shared;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -12,9 +11,9 @@ namespace RushAg.Server.Controllers
     [ApiController]
     public class TodoItemController : ControllerBase
     {
-        private readonly IRepositoryBase<TodoItem> _repository;
+        private readonly IRepository _repository;
 
-        public TodoItemController(IRepositoryBase<TodoItem> repository)
+        public TodoItemController(IRepository repository)
         {
             _repository = repository;
         }
@@ -23,7 +22,7 @@ namespace RushAg.Server.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<TodoItemDto>>> Get()
         {
-            var returnValue = await _repository.GetAll();
+            var returnValue = await _repository.GetAllAsync();
             return Ok(returnValue);
         }
 
@@ -31,7 +30,7 @@ namespace RushAg.Server.Controllers
         [HttpGet("{id}")]
         public ActionResult<TodoItemDto> Get(int id)
         {
-            var returnValue = _repository.GetById(id);
+            var returnValue = _repository.GetByIdAsync(id);
             if (returnValue == null)
                 return NotFound();
 
@@ -43,7 +42,7 @@ namespace RushAg.Server.Controllers
         public async Task<ActionResult<TodoItemDto>> Post([FromBody] CreateTodoItemDto request)
         {
             //TODO: write a query instead of using GetAll
-            var existingItem = await _repository.GetAll();
+            var existingItem = await _repository.GetAllAsync();
             existingItem = existingItem.Where(t => t.Name == request.Name);
 
             if (existingItem == null)
@@ -53,7 +52,7 @@ namespace RushAg.Server.Controllers
             }
 
             var newTodoItem = new TodoItem(request.Name);
-            newTodoItem = await _repository.Add(newTodoItem);
+            newTodoItem = await _repository.AddAsync(newTodoItem);
 
             var dto = new TodoItemDto
             {
@@ -77,14 +76,13 @@ namespace RushAg.Server.Controllers
                 if (todoItem == null)
                     return BadRequest();
 
-                var toUpdate = await _repository.GetById(id);
+                var toUpdate = await _repository.GetByIdAsync(id);
                 if (toUpdate == null)
                     return NotFound();
 
-                toUpdate.Name = todoItem.Name;
-                toUpdate.Notes = todoItem.Notes;
+                toUpdate.UpdateStep(todoItem.Name, todoItem.Notes);
 
-                var updatedTodo = await _repository.Update(toUpdate);
+                var updatedTodo = await _repository.UpdateAsync(toUpdate);
 
                 return Ok(updatedTodo);
             }
@@ -104,13 +102,13 @@ namespace RushAg.Server.Controllers
                 if (toggleTodoItem == null)
                     return BadRequest();
 
-                var toUpdate = await _repository.GetById(id);
+                var toUpdate = await _repository.GetByIdAsync(id);
                 if (toUpdate == null)
                     return NotFound();
 
-                toUpdate.IsComplete = toggleTodoItem.IsComplete;
+                toUpdate.SetIsComplete(toggleTodoItem.IsComplete);
 
-                var updatedTodo = await _repository.Update(toUpdate);
+                var updatedTodo = await _repository.UpdateAsync(toUpdate);
 
                 return Ok(updatedTodo);
 
@@ -122,15 +120,34 @@ namespace RushAg.Server.Controllers
             }
         }
 
+        //PUT api/step/5
+        [HttpPut("step/{id}")]
+        public async Task<ActionResult<TodoStepDto>> Put(int id, [FromBody] CreateTodoStepDto createTodoStep)
+        {
+            if (createTodoStep == null)
+                return BadRequest();
+
+            var parentItem = await _repository.GetByIdAsync(id);
+            if (parentItem == null)
+                return NotFound();
+
+            var step = new TodoStep(createTodoStep.StepName);
+            parentItem.AddStep(step);
+
+            var updatedTodo = await _repository.UpdateAsync(parentItem);
+
+            return Ok(updatedTodo);
+        }
+
         // DELETE api/<TodoItemController>/5
         [HttpDelete("{id}")]
         public async Task<ActionResult> Delete(int id)
         {
-            var toDelete = await _repository.GetById(id);
+            var toDelete = await _repository.GetByIdAsync(id);
             if (toDelete == null)
                 return NotFound();
 
-            await _repository.Delete(toDelete);
+            await _repository.DeleteAsync(toDelete);
 
             return NoContent();
         }

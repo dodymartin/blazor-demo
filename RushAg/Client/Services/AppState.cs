@@ -1,5 +1,4 @@
-﻿using RushAg.Client.ViewModels;
-using RushAg.Shared;
+﻿using RushAg.Shared;
 using System.Net.Http.Json;
 
 namespace RushAg.Client.Services;
@@ -9,10 +8,10 @@ public class AppState
     public event Action OnChange;
     private readonly HttpClient _httpClient;
 
-    private List<TodoItemViewModel> _todoItems = new();
-    public List<TodoItemViewModel> TodoNotCompleted = new();
-    public List<TodoItemViewModel> TodoCompleted = new();
-    public TodoItemViewModel? CurrentTodo = null;
+    private List<TodoItemDto> _todoItems = new();
+    public List<TodoItemDto> TodoNotCompleted = new();
+    public List<TodoItemDto> TodoCompleted = new();
+    public TodoItemDto? CurrentTodo = null;
     public bool IsLoading = true;
 
     public AppState(HttpClient http)
@@ -22,7 +21,7 @@ public class AppState
 
     public async Task GetTodos()
     {
-        _todoItems = await _httpClient.GetFromJsonAsync<List<TodoItemViewModel>>("api/TodoItem") ?? new();
+        _todoItems = await _httpClient.GetFromJsonAsync<List<TodoItemDto>>("api/TodoItem") ?? new();
         SetLists();
         IsLoading = false;
     }
@@ -34,7 +33,7 @@ public class AppState
         NotifyStateChanged();
     }
 
-    public async void ToggleComplete(TodoItemViewModel todo)
+    public async void ToggleComplete(TodoItemDto todo)
     {
         try
         {
@@ -50,7 +49,7 @@ public class AppState
         }
     }
 
-    public async Task UpdateTodo(TodoItemViewModel todo)
+    public async Task UpdateTodo(TodoItemDto todo)
     {
         var request = new UpdateTodoItemDto()
         {
@@ -64,7 +63,20 @@ public class AppState
         await GetTodos();
     }
 
-    public async Task DeleteTodo(TodoItemViewModel todo)
+    public async Task AddStep(CreateTodoStepDto step)
+    {
+        var request = new TodoStepDto()
+        {
+            StepName = step.StepName
+        };
+
+        var response = await _httpClient.PutAsJsonAsync($"api/TodoItem/step/{step.ParentId}", request);
+        response.EnsureSuccessStatusCode();
+
+        await GetTodos();
+    }
+
+    public async Task DeleteTodo(TodoItemDto todo)
     {
         if (todo.TodoItemId == CurrentTodo?.TodoItemId)
             CurrentTodo = null;
@@ -75,7 +87,7 @@ public class AppState
         await GetTodos();
     }
 
-    public async Task AddTodo(TodoItemViewModel todo)
+    public async Task AddTodo(TodoItemDto todo)
     {
         var request = new CreateTodoItemDto
         {

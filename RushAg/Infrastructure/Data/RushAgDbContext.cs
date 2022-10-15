@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using RushAg.Core.Entities;
 
 namespace RushAg.Infrastructure.Data
 {

@@ -1,4 +1,5 @@
-﻿@using RushAg.Client.ViewModels
+﻿@using RushAg.Shared
+
 <EditForm Model="@Todo" OnValidSubmit="SaveTodo">
     <DataAnnotationsValidator />
     <ValidationSummary />
@@ -10,8 +11,7 @@
             <p>@step.StepName</p>
         }
         <AddStepForm TodoItem="Todo"
-                     TodoStep="newTodoStep"
-                     OnSave="SaveTodo" />
+                     OnSave="OnTodoStepSave" />
         <label for="description">Description:</label>
         <InputTextArea id="description" rows="5" class="form-control mb-3" @bind-Value="Todo.Notes" />
         <button class="btn btn-secondary" @onclick="Cancel">Close</button>
@@ -21,20 +21,15 @@
 
 @code {
     [Parameter]
-    public TodoItemViewModel Todo { get; set; } = new();
+    public TodoItemDto Todo { get; set; } = new();
     [Parameter]
-    public EventCallback<TodoItemViewModel> OnSave { get; set; }
+    public EventCallback<TodoItemDto> OnSave { get; set; }
     [Parameter]
-    public EventCallback<TodoStepViewModel> OnTodoStepSave { get; set; }
+    public EventCallback<CreateTodoStepDto> OnTodoStepSave { get; set; }
     [Parameter]
     public EventCallback OnCancel { get; set; }
 
-    private TodoStepViewModel newTodoStep = new();
-
-    private void SaveTodoStep()
-    {
-        OnTodoStepSave.InvokeAsync(newTodoStep);
-    }
+    private TodoStepDto newTodoStep = new();
 
     private void SaveTodo()
     {

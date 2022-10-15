@@ -1,4 +1,4 @@
-﻿@using RushAg.Client.ViewModels
+﻿@using RushAg.Shared;
 
 <EditForm Model="@Todo" OnValidSubmit="SaveTodo">
     <DataAnnotationsValidator />
@@ -8,9 +8,9 @@
 
 @code {
     [Parameter]
-    public TodoItemViewModel Todo { get; set; } = new();
+    public TodoItemDto Todo { get; set; } = new();
     [Parameter]
-    public EventCallback<TodoItemViewModel> OnSave { get; set; }
+    public EventCallback<TodoItemDto> OnSave { get; set; }
 
     private void SaveTodo()
     {

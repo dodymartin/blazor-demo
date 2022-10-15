@@ -12,7 +12,7 @@ else
     <div class="d-flex">
         <div class="d-flex flex-column flex-fill">
             <h3>To Do List</h3>
-            <TableView Items="@state.TodoNotCompleted" Context="todo" TItem="TodoItemViewModel">
+            <TableView Items="@state.TodoNotCompleted" Context="todo" TItem="TodoItemDto">
                 <TableHeading>
                     <tr>
                         <th scope="col" style="width : 5%" />
@@ -73,7 +73,8 @@ else
 
                 <TodoUpdateForm Todo="state.CurrentTodo"
                         OnCancel="CancelUpdate"
-                        OnSave="state.UpdateTodo" />
+                        OnSave="state.UpdateTodo"
+                        OnTodoStepSave="state.AddStep"/>
 
             </div>
         }
@@ -95,7 +96,7 @@ else
         StateHasChanged();
     }
 
-    private void SetCurrentTodo(TodoItemViewModel todo)
+    private void SetCurrentTodo(TodoItemDto todo)
     {
         state.CurrentTodo = todo;
         StateHasChanged();
