@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using RushAg.Core.Entities;
+using RushAg.Core.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace RushAg.Infrastructure.Data
 {
-    public class Repository
+    public class Repository : IRepository
     {
         private readonly RushAgDbContext _dbContext;
 
@@ -17,7 +18,18 @@ namespace RushAg.Infrastructure.Data
             _dbContext = dbContext;
         }
 
-        public async Task<TodoItem> AddTodo(TodoItem entity)
+        public async Task<TodoItem?> GetByIdAsync(long id)
+        {
+
+            return await _dbContext.TodoItems.Where(t => t.TodoItemId == id).FirstOrDefaultAsync();
+        }
+
+        public async Task<IEnumerable<TodoItem>> GetAllAsync()
+        {
+            return await _dbContext.TodoItems.Include(t => t.Steps).ToListAsync();
+        }
+
+        public async Task<TodoItem> AddAsync(TodoItem entity)
         {
             _dbContext.Add(entity);
             await _dbContext.SaveChangesAsync();
@@ -25,7 +37,7 @@ namespace RushAg.Infrastructure.Data
             return entity;
         }
 
-        public async Task<TodoItem> Update(TodoItem entity)
+        public async Task<TodoItem> UpdateAsync(TodoItem entity)
         {
             _dbContext.Update(entity);
             await _dbContext.SaveChangesAsync();
@@ -33,20 +45,10 @@ namespace RushAg.Infrastructure.Data
             return entity;
         }
 
-        public async Task Delete(TodoItem entity)
+        public async Task DeleteAsync(TodoItem entity)
         {
             _dbContext.Remove(entity);
             await _dbContext.SaveChangesAsync();
-        }
-
-        public async Task<IEnumerable<TodoItem>> GetAll()
-        {
-            return await _dbContext.TodoItems.Include(t => t.Steps).ToListAsync();
-        }
-
-        public async Task<TodoItem?> GetById(long id)
-        {
-            return await _dbContext.TodoItems.Where(t => t.TodoItemId == id).FirstOrDefaultAsync();
         }
     }
 }
