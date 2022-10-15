@@ -1,0 +1,26 @@
+﻿<EditForm Model="@todoStep" OnValidSubmit="SaveTodo">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <InputText id="name" class="form-control" @bind-Value="todoStep.StepName" placeholder="Add a step..." />
+</EditForm>
+
+@code {
+    [Parameter]
+    public TodoItemDto TodoItem { get; set; } = default!;
+    [Parameter]
+    public EventCallback<CreateTodoStepDto> OnSave { get; set; }
+
+    private TodoStepDto todoStep = new();
+
+    private void SaveTodo()
+    {
+        TodoItem.Steps.Add(todoStep);
+        var createTodoStep = new CreateTodoStepDto()
+        {
+            StepName = todoStep.StepName,
+            ParentId = TodoItem.TodoItemId
+        };
+        OnSave.InvokeAsync(createTodoStep);
+        todoStep = new();
+    }
+}

@@ -1,112 +1,104 @@
 ﻿@page "/todo"
-@inject HttpClient Http
+@inject AppState state
 
 <PageTitle>To Do</PageTitle>
 
-<h1>To Do List</h1>
+@if (@state.IsLoading)
+{
+    <h3>Loading....</h3>
+}
+else
+{
+    <div class="d-flex">
+        <div class="d-flex flex-column flex-fill">
+            <h3>To Do List</h3>
+            <TableView Items="@state.TodoNotCompleted" Context="todo" TItem="TodoItemDto">
+                <TableHeading>
+                    <tr>
+                        <th scope="col" style="width : 5%" />
+                        <th scope="col" style="width:70%">Name</th>
+                        <th scope="col" style="width:20%">Create Date</th>
+                        <th scope="col" style="width:5%" />
+                    </tr>
+                </TableHeading>
+                <TableBody>
+                    <tr>
+                        <td>
+                            <div class="round">
+                                <input @key="todo" type="checkbox" checked="@todo.IsComplete" id="@todo.TodoItemId" onchange="@(() => state.ToggleComplete(todo))" />
+                                <label for="@todo.TodoItemId"></label>
+                            </div>
+                        </td>
+                        <td onclick=@(() => SetCurrentTodo(todo))>@todo.Name</td>
+                        <td onclick=@(() => SetCurrentTodo(todo))>@todo.CreateDate</td>
+                        <td><button class="btn btn-danger"><i class="oi oi-trash" style="color:black" onclick="@(() => state.DeleteTodo(todo))" /></button></td>
+                    </tr>
+                </TableBody>
+            </TableView>
 
-<TableView Items=todoNotCompleted TItem="TodoItem">
-    <TableHeading>
-        <tr>
-            <th scope="col" style="width : 5%"/>
-            <th scope="col" style="width:70%">Name</th>
-            <th scope="col" style="width:20%">Create Date</th>
-            <th scope="col" style="width:5%"/>
-        </tr>
-    </TableHeading>
-    <TableBody>
-        <tr>
-            <td>
-                <div class="round">
-                    <input @key="context" type="checkbox" checked="@context.IsComplete" id="@context.Id" onchange="@(() => ToggleComplete(context))"/>
-                    <label for="@context.Id"></label>
-                </div>
-            </td>
-            <td>@context.Name</td>
-            <td>@context.CreateDate</td>
-            <td><button class="btn btn-danger"><i class="oi oi-trash" style="color:black" onclick="@(() => DeleteTodo(context))"/></button></td>
-        </tr>
-    </TableBody>
-</TableView>
+            <button class="btn btn-primary col-1 m-3" type="button" data-bs-toggle="collapse" data-bs-target="#complete" aria-expanded="false" aria-controls="complete">> Completed</button>
+            <div class="collapse" id="complete">
+                <TableView Items="@state.TodoCompleted" Context="todo">
+                    <TableHeading>
+                        <tr>
+                            <th scope="col" style="width : 5%" />
+                            <th scope="col" style="width:70%">Name</th>
+                            <th scope="col" style="width:20%">Complete Date</th>
+                            <th scope="col" style="width:5%" />
+                        </tr>
+                    </TableHeading>
+                    <TableBody>
+                        <tr>
+                            <td>
+                                <div class="round">
+                                    <input @key="todo" type="checkbox" checked="@todo.IsComplete" id="@todo.TodoItemId" onchange="@(() => state.ToggleComplete(todo))" />
+                                    <label for="@todo.TodoItemId"></label>
+                                </div>
+                            </td>
+                            <td class="completed-name">@todo.Name</td>
+                            <td>@todo.CompleteDate</td>
+                            <td><button class="btn btn-danger"><i class="oi oi-trash" style="color:black" onclick="@(() => state.DeleteTodo(todo))" /></button></td>
+                        </tr>
+                    </TableBody>
+                </TableView>
+            </div>
 
-<h1>Completed</h1>
+            <div>
+                <AddTodoForm OnSave="state.AddTodo" />
+            </div>
+        </div>
+        @if (state.CurrentTodo != null)
+        {
+            <div class="d-flex flex-column flex-lg-fill p-2 m-2">
 
-<TableView Items=todoCompleted TItem="TodoItem">
-    <TableHeading>
-        <tr>
-            <th scope="col" style="width : 5%"/>
-            <th scope="col" style="width:70%">Name</th>
-            <th scope="col" style="width:20%">Complete Date</th>
-            <th scope="col" style="width:5%"/>
-        </tr>
-    </TableHeading>
-    <TableBody>
-        <tr>
-            <td>
-                <div class="round">
-                    <input @key="context" type="checkbox" checked="@context.IsComplete" id="@context.Id" onchange="@(() => ToggleComplete(context))"/>
-                    <label for="@context.Id"></label>
-                </div>
-            </td>
-            <td class="completed-name">@context.Name</td>
-            <td>@context.CompleteDate</td>
-            <td><button class="btn btn-danger"><i class="oi oi-trash" style="color:black" onclick="@(() => DeleteTodo(context))"/></button></td>
-        </tr>
-    </TableBody>
-</TableView>
+                <TodoUpdateForm Todo="state.CurrentTodo"
+                        OnCancel="CancelUpdate"
+                        OnSave="state.UpdateTodo"
+                        OnTodoStepSave="state.AddStep"/>
 
-<div>
-    <TodoUpdateForm OnSave="AddTodo" />
-</div>
+            </div>
+        }
+    </div>
+}
+
 
 @code {
-    private List<TodoItem> todoItems = new();
-    private List<TodoItem> todoNotCompleted = new();
-    private List<TodoItem> todoCompleted = new();
-
-    private async Task GetTodos()
-    {
-        todoItems = await Http.GetFromJsonAsync<List<TodoItem>>("api/TodoItem") ?? new();
-        SetLists();   
-    }
 
     protected override async Task OnInitializedAsync()
     {
-        await GetTodos();
+        state.OnChange += StateHasChanged;
+        await state.GetTodos();
     }
 
-    private async void ToggleComplete(TodoItem todo)
+    private void CancelUpdate()
     {
-        todo.IsComplete = !todo.IsComplete;
-        await UpdateTodo(todo);
+        state.CurrentTodo = null;
+        StateHasChanged();
     }
 
-    private async Task UpdateTodo(TodoItem todo)
+    private void SetCurrentTodo(TodoItemDto todo)
     {
-        var response = await Http.PutAsJsonAsync($"api/TodoItem/{todo.Id}", todo);
-        response.EnsureSuccessStatusCode();
-
-        await GetTodos();
-    }
-
-    private async Task DeleteTodo(TodoItem todo)
-    {
-        var response = await Http.DeleteAsync($"api/TodoItem/{todo.Id}");
-        await GetTodos();
-    }
-
-    private async Task AddTodo(TodoItem todo)
-    {
-        var response = await Http.PostAsJsonAsync($"api/TodoItem", todo);
-        response.EnsureSuccessStatusCode();
-
-        await GetTodos();
-    }
-
-    private void SetLists()
-    {
-        todoNotCompleted = todoItems.Where(x => !x.IsComplete).ToList();
-        todoCompleted = todoItems.Where(x => x.IsComplete).ToList();
+        state.CurrentTodo = todo;
         StateHasChanged();
     }
 }

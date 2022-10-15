@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using RushAg.Shared;
+using RushAg.Core.Entities;
 
-namespace RushAg.Server.Data
+namespace RushAg.Infrastructure.Data
 {
     public class RushAgDbContext : DbContext
     {
@@ -9,6 +9,7 @@ namespace RushAg.Server.Data
             : base(options)
         { }
         public DbSet<TodoItem> TodoItems { get; set; }
+        public DbSet<TodoStep> TodoSteps { get; set; }
     }
 
     

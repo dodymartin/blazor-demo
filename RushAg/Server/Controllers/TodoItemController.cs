@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using RushAg.Server.Data;
+using RushAg.Core.Entities;
+using RushAg.Core.Interfaces;
 using RushAg.Shared;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -10,26 +11,26 @@ namespace RushAg.Server.Controllers
     [ApiController]
     public class TodoItemController : ControllerBase
     {
-        private readonly IDataRepository _repository;
+        private readonly IRepository _repository;
 
-        public TodoItemController(IDataRepository repository)
+        public TodoItemController(IRepository repository)
         {
             _repository = repository;
         }
 
         // GET: api/<TodoItemController>
         [HttpGet]
-        public ActionResult<IEnumerable<TodoItem>> Get()
+        public async Task<ActionResult<IEnumerable<TodoItemDto>>> Get()
         {
-            var returnValue = _repository.GetAll();
+            var returnValue = await _repository.GetAllAsync();
             return Ok(returnValue);
         }
 
         // GET api/<TodoItemController>/5
         [HttpGet("{id}")]
-        public ActionResult<TodoItem> Get(int id)
+        public ActionResult<TodoItemDto> Get(int id)
         {
-            var returnValue = _repository.GetById(id);
+            var returnValue = _repository.GetByIdAsync(id);
             if (returnValue == null)
                 return NotFound();
 
@@ -38,44 +39,115 @@ namespace RushAg.Server.Controllers
 
         // POST api/<TodoItemController>
         [HttpPost]
-        public ActionResult<TodoItem> Post([FromBody] TodoItem todoItem)
+        public async Task<ActionResult<TodoItemDto>> Post([FromBody] CreateTodoItemDto request)
         {
-            if (todoItem == null)
-                return BadRequest();
+            //TODO: write a query instead of using GetAll
+            var existingItem = await _repository.GetAllAsync();
+            existingItem = existingItem.Where(t => t.Name == request.Name);
 
-            var newTodoItem = _repository.Add(todoItem);
-            if (!_repository.Save())
-                throw new Exception("Error saving new TodoItem");
+            if (existingItem == null)
+            {
+                //TODO: DuplicateException type creation
+                throw new Exception($"A TodoItem with name {request.Name} already exists");
+            }
 
-            return Ok(newTodoItem);
+            var newTodoItem = new TodoItem(request.Name);
+            newTodoItem = await _repository.AddAsync(newTodoItem);
+
+            var dto = new TodoItemDto
+            {
+                TodoItemId = newTodoItem.TodoItemId,
+                IsComplete = newTodoItem.IsComplete,
+                Name = newTodoItem.Name,
+                Notes = newTodoItem.Notes,
+                Steps = new List<TodoStepDto>()
+            };
+
+
+            return Ok(dto);
         }
 
         // PUT api/<TodoItemController>/5
         [HttpPut("{id}")]
-        public ActionResult<TodoItem> Put(int id, [FromBody] TodoItem todoItem)
+        public async Task<ActionResult<TodoItemDto>> Put(int id, [FromBody] UpdateTodoItemDto todoItem)
         {
-            if (todoItem == null)
+            try
+            {
+                if (todoItem == null)
+                    return BadRequest();
+
+                var toUpdate = await _repository.GetByIdAsync(id);
+                if (toUpdate == null)
+                    return NotFound();
+
+                toUpdate.UpdateStep(todoItem.Name, todoItem.Notes);
+
+                var updatedTodo = await _repository.UpdateAsync(toUpdate);
+
+                return Ok(updatedTodo);
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+                return BadRequest();
+            }
+        }
+
+        //PUT api/<TodoItemController/toggle/5
+        [HttpPut("toggle/{id}")]
+        public async Task<ActionResult<TodoItemDto>> Put(int id, [FromBody] ToggleTodoItemDto toggleTodoItem)
+        {
+            try
+            {
+                if (toggleTodoItem == null)
+                    return BadRequest();
+
+                var toUpdate = await _repository.GetByIdAsync(id);
+                if (toUpdate == null)
+                    return NotFound();
+
+                toUpdate.SetIsComplete(toggleTodoItem.IsComplete);
+
+                var updatedTodo = await _repository.UpdateAsync(toUpdate);
+
+                return Ok(updatedTodo);
+
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+                return BadRequest();
+            }
+        }
+
+        //PUT api/step/5
+        [HttpPut("step/{id}")]
+        public async Task<ActionResult<TodoStepDto>> Put(int id, [FromBody] CreateTodoStepDto createTodoStep)
+        {
+            if (createTodoStep == null)
                 return BadRequest();
 
-            var updatedTodo = _repository.Update(todoItem);
+            var parentItem = await _repository.GetByIdAsync(id);
+            if (parentItem == null)
+                return NotFound();
 
-            if (!_repository.Save())
-                throw new Exception("Error updating TodoItem");
+            var step = new TodoStep(createTodoStep.StepName);
+            parentItem.AddStep(step);
+
+            var updatedTodo = await _repository.UpdateAsync(parentItem);
 
             return Ok(updatedTodo);
         }
 
         // DELETE api/<TodoItemController>/5
         [HttpDelete("{id}")]
-        public ActionResult Delete(int id)
+        public async Task<ActionResult> Delete(int id)
         {
-            var toDelete = _repository.GetById(id);
+            var toDelete = await _repository.GetByIdAsync(id);
             if (toDelete == null)
                 return NotFound();
 
-            _repository.Delete(toDelete);
-            if (!_repository.Save())
-                throw new Exception("Error deleting TodoItem");
+            await _repository.DeleteAsync(toDelete);
 
             return NoContent();
         }

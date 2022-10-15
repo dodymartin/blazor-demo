@@ -42,8 +42,16 @@ span.pointer {
     cursor: pointer;
 }
 
+.main {
+    flex-grow: 1;
+    overflow-y: auto;
+}
 
-
+.rightbar {
+    width: 20rem;
+    display: flex;
+    flex-direction: column;
+}
 
 #blazor-error-ui {
     background: lightyellow;

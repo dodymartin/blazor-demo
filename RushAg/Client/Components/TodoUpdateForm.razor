@@ -1,14 +1,35 @@
-﻿<EditForm Model="@Todo" OnValidSubmit="SaveTodo">
+﻿@using RushAg.Shared
+
+<EditForm Model="@Todo" OnValidSubmit="SaveTodo">
     <DataAnnotationsValidator />
     <ValidationSummary />
-    <InputText id="name" class="form-control" @bind-Value="Todo.Name" placeholder="Add a task..."/>
+    <div class="form-group">
+        <label for="name">Name:</label>
+        <InputTextArea id="name" rows=4 class="form-control mb-3" @bind-Value="Todo.Name" />
+        @foreach (var step in Todo.Steps)
+        {
+            <p>@step.StepName</p>
+        }
+        <AddStepForm TodoItem="Todo"
+                     OnSave="OnTodoStepSave" />
+        <label for="description">Description:</label>
+        <InputTextArea id="description" rows="5" class="form-control mb-3" @bind-Value="Todo.Notes" />
+        <button class="btn btn-secondary" @onclick="Cancel">Close</button>
+        <button class="btn btn-success" @onclick="SaveTodo">Save</button>
+    </div>
 </EditForm>
 
 @code {
     [Parameter]
-    public TodoItem Todo { get; set; } = new();
+    public TodoItemDto Todo { get; set; } = new();
     [Parameter]
-    public EventCallback<TodoItem> OnSave { get; set; }
+    public EventCallback<TodoItemDto> OnSave { get; set; }
+    [Parameter]
+    public EventCallback<CreateTodoStepDto> OnTodoStepSave { get; set; }
+    [Parameter]
+    public EventCallback OnCancel { get; set; }
+
+    private TodoStepDto newTodoStep = new();
 
     private void SaveTodo()
     {
@@ -16,4 +37,9 @@
         Todo = new();
     }
 
+    private void Cancel()
+    {
+        OnCancel.InvokeAsync();
+        Todo = new();
+    }
 }
