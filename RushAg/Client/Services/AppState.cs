@@ -67,7 +67,7 @@ public class AppState
     {
         var request = new TodoStepDto()
         {
-            Name = step.Name
+            StepName = step.StepName
         };
 
         var response = await _httpClient.PutAsJsonAsync($"api/TodoItem/step/{step.ParentId}", request);

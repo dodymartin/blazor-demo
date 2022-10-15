@@ -8,7 +8,7 @@
         <InputTextArea id="name" rows=4 class="form-control mb-3" @bind-Value="Todo.Name" />
         @foreach (var step in Todo.Steps)
         {
-            <p>@step.Name</p>
+            <p>@step.StepName</p>
         }
         <AddStepForm TodoItem="Todo"
                      OnSave="OnTodoStepSave" />
