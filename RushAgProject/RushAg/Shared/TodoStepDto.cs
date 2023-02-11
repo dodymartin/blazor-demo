@@ -8,13 +8,16 @@ namespace RushAg.Shared
 {
     public class TodoStepDto
     {
-        public long TodoStepId { get; set; }
-        public string StepName { get; set; }
+        public long Id { get; set; }
+        public string Name { get; set; }
+        public bool IsCompleted { get; set; }
+        public DateTime? CompleteDate { get; set; }
+        public DateTime CreateDate { get; set; }
     }
 
     public class CreateTodoStepDto
     {
-        public long ParentId { get; set; }
-        public string StepName { get; set; }
+        public long TodoItemId { get; set; }
+        public string Name { get; set; }
     }
 }

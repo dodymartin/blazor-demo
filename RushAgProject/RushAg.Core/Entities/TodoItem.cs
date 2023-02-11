@@ -4,7 +4,7 @@ namespace RushAg.Core.Entities;
 
 public partial class TodoItem
 {
-    public long TodoItemId { get; set; }
+    public long Id { get; set; }
     public string Name { get; set; }
     public string Notes { get; set; }
     public bool IsComplete { get; private set; } = false;

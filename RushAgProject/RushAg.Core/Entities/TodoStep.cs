@@ -10,24 +10,23 @@ namespace RushAg.Core.Entities;
 
 public partial class TodoStep
 {
-    public long TodoStepId { get; set; }
-    public string StepName { get; private set; }
-
+    public long Id { get; set; }
+    public string Name { get; private set; }
     public bool IsComplete { get; private set; } = false;
     public DateTime? CompleteDate { get; set; }
     public DateTime CreateDate { get; set; } = DateTime.Now;
 
-    public TodoStep(string stepName)
+    public TodoStep(string name)
     {
-        StepName = stepName;
+        Name = name;
     }
 
-    public void UpdateStepName(string newStepName)
+    public void UpdateStepName(string newName)
     {
-        if (string.IsNullOrEmpty(newStepName))
-            throw new ArgumentNullException(nameof(newStepName));
+        if (string.IsNullOrEmpty(newName))
+            throw new ArgumentNullException(nameof(newName));
 
-        StepName = newStepName;
+        Name = newName;
     }
 
     public void ToggleCompleted()

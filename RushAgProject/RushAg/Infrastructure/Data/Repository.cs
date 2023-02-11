@@ -21,12 +21,12 @@ namespace RushAg.Infrastructure.Data
         public async Task<TodoItem?> GetByIdAsync(long id)
         {
 
-            return await _dbContext.TodoItems.Where(t => t.TodoItemId == id).FirstOrDefaultAsync();
+            return await _dbContext.TodoItems.Where(t => t.Id == id).FirstOrDefaultAsync();
         }
 
         public async Task<IEnumerable<TodoItem>> GetAllAsync()
         {
-            return await _dbContext.TodoItems.Include(t => t.Steps).ToListAsync();
+            return await _dbContext.TodoItems.Include(t => t.Steps).AsNoTracking().ToListAsync();
         }
 
         public async Task<TodoItem> AddAsync(TodoItem entity)

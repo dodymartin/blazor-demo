@@ -22,8 +22,15 @@ namespace RushAg.Server.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<TodoItemDto>>> Get()
         {
-            var returnValue = await _repository.GetAllAsync();
-            return Ok(returnValue);
+            try
+            {
+                var returnValue = await _repository.GetAllAsync();
+                return Ok(returnValue);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         // GET api/<TodoItemController>/5
@@ -56,7 +63,7 @@ namespace RushAg.Server.Controllers
 
             var dto = new TodoItemDto
             {
-                TodoItemId = newTodoItem.TodoItemId,
+                Id = newTodoItem.Id,
                 IsComplete = newTodoItem.IsComplete,
                 Name = newTodoItem.Name,
                 Notes = newTodoItem.Notes,
@@ -131,7 +138,7 @@ namespace RushAg.Server.Controllers
             if (parentItem == null)
                 return NotFound();
 
-            var step = new TodoStep(createTodoStep.StepName);
+            var step = new TodoStep(createTodoStep.Name);
             parentItem.AddStep(step);
 
             var updatedTodo = await _repository.UpdateAsync(parentItem);

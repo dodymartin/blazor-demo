@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using RushAg.Core.Entities;
+using System.Reflection;
 
 namespace RushAg.Infrastructure.Data
 {
@@ -10,7 +11,12 @@ namespace RushAg.Infrastructure.Data
         { }
         public DbSet<TodoItem> TodoItems { get; set; }
         public DbSet<TodoStep> TodoSteps { get; set; }
-    }
 
-    
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+            modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+        }
+    }
 }

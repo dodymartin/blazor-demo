@@ -25,8 +25,8 @@ else
                     <tr>
                         <td>
                             <div class="round">
-                                <input @key="todo" type="checkbox" checked="@todo.IsComplete" id="@todo.TodoItemId" onchange="@(() => state.ToggleComplete(todo))" />
-                                <label for="@todo.TodoItemId"></label>
+                                <input @key="todo" type="checkbox" checked="@todo.IsComplete" id="@todo.Id" onchange="@(() => state.ToggleComplete(todo))" />
+                                <label for="@todo.Id"></label>
                             </div>
                         </td>
                         <td onclick=@(() => SetCurrentTodo(todo))>@todo.Name</td>
@@ -51,8 +51,8 @@ else
                         <tr>
                             <td>
                                 <div class="round">
-                                    <input @key="todo" type="checkbox" checked="@todo.IsComplete" id="@todo.TodoItemId" onchange="@(() => state.ToggleComplete(todo))" />
-                                    <label for="@todo.TodoItemId"></label>
+                                    <input @key="todo" type="checkbox" checked="@todo.IsComplete" id="@todo.Id" onchange="@(() => state.ToggleComplete(todo))" />
+                                    <label for="@todo.Id"></label>
                                 </div>
                             </td>
                             <td class="completed-name">@todo.Name</td>

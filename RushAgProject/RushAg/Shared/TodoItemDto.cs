@@ -8,7 +8,7 @@ namespace RushAg.Shared
 {
     public class TodoItemDto
     {
-        public long TodoItemId { get; set; }
+        public long Id { get; set; }
         public string Name { get; set; }
         public string Notes { get; set; }
         public bool IsComplete { get; set; } = false;

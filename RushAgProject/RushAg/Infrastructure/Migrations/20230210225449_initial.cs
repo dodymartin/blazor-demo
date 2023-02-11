@@ -3,25 +3,28 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace RushAg.Infrastructure.Data.Migrations
+namespace RushAg.Infrastructure.Migrations
 {
-    public partial class TodoSteps : Migration
+    public partial class initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<DateTime>(
-                name: "CompletDate",
-                table: "TodoItems",
-                type: "datetime2",
-                nullable: false,
-                defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
-
-            migrationBuilder.AddColumn<DateTime>(
-                name: "CreateDate",
-                table: "TodoItems",
-                type: "datetime2",
-                nullable: false,
-                defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
+            migrationBuilder.CreateTable(
+                name: "TodoItems",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
+                    Notes = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
+                    IsComplete = table.Column<bool>(type: "bit", nullable: false),
+                    CompleteDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    CreateDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TodoItems", x => x.Id);
+                });
 
             migrationBuilder.CreateTable(
                 name: "TodoSteps",
@@ -29,11 +32,10 @@ namespace RushAg.Infrastructure.Data.Migrations
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    StepName = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
-                    IsComplete = table.Column<bool>(type: "bit", nullable: true),
-                    CompleteDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
+                    IsComplete = table.Column<bool>(type: "bit", nullable: false),
+                    CompleteDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     CreateDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    TodoId = table.Column<long>(type: "bigint", nullable: false),
                     TodoItemId = table.Column<long>(type: "bigint", nullable: false)
                 },
                 constraints: table =>
@@ -58,13 +60,8 @@ namespace RushAg.Infrastructure.Data.Migrations
             migrationBuilder.DropTable(
                 name: "TodoSteps");
 
-            migrationBuilder.DropColumn(
-                name: "CompletDate",
-                table: "TodoItems");
-
-            migrationBuilder.DropColumn(
-                name: "CreateDate",
-                table: "TodoItems");
+            migrationBuilder.DropTable(
+                name: "TodoItems");
         }
     }
 }

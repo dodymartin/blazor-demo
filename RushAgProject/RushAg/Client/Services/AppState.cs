@@ -21,9 +21,16 @@ public class AppState
 
     public async Task GetTodos()
     {
-        _todoItems = await _httpClient.GetFromJsonAsync<List<TodoItemDto>>("api/TodoItem") ?? new();
-        SetLists();
-        IsLoading = false;
+        try
+        {
+            _todoItems = await _httpClient.GetFromJsonAsync<List<TodoItemDto>>("api/TodoItem") ?? new();
+            SetLists();
+            IsLoading = false;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+        }
     }
 
     private void SetLists()
@@ -38,7 +45,7 @@ public class AppState
         try
         {
             var request = new ToggleTodoItemDto() { IsComplete = !todo.IsComplete };
-            var response = await _httpClient.PutAsJsonAsync($"api/TodoItem/toggle/{todo.TodoItemId}", request);
+            var response = await _httpClient.PutAsJsonAsync($"api/TodoItem/toggle/{todo.Id}", request);
             response.EnsureSuccessStatusCode();
 
             await GetTodos();
@@ -57,7 +64,7 @@ public class AppState
             Notes = todo.Notes
         };
 
-        var response = await _httpClient.PutAsJsonAsync($"api/TodoItem/{todo.TodoItemId}", request);
+        var response = await _httpClient.PutAsJsonAsync($"api/TodoItem/{todo.Id}", request);
         response.EnsureSuccessStatusCode();
 
         await GetTodos();
@@ -67,10 +74,10 @@ public class AppState
     {
         var request = new TodoStepDto()
         {
-            StepName = step.StepName
+            Name = step.Name
         };
 
-        var response = await _httpClient.PutAsJsonAsync($"api/TodoItem/step/{step.ParentId}", request);
+        var response = await _httpClient.PutAsJsonAsync($"api/TodoItem/step/{step.TodoItemId}", request);
         response.EnsureSuccessStatusCode();
 
         await GetTodos();
@@ -78,10 +85,10 @@ public class AppState
 
     public async Task DeleteTodo(TodoItemDto todo)
     {
-        if (todo.TodoItemId == CurrentTodo?.TodoItemId)
+        if (todo.Id == CurrentTodo?.Id)
             CurrentTodo = null;
 
-        var response = await _httpClient.DeleteAsync($"api/TodoItem/{todo.TodoItemId}");
+        var response = await _httpClient.DeleteAsync($"api/TodoItem/{todo.Id}");
         response.EnsureSuccessStatusCode();
 
         await GetTodos();
