@@ -36,9 +36,11 @@ else
                 </TableBody>
             </TableView>
 
-            <button class="btn btn-primary col-1 m-3" type="button" data-bs-toggle="collapse" data-bs-target="#complete" aria-expanded="false" aria-controls="complete">> Completed</button>
-            <div class="collapse" id="complete">
-                <TableView Items="@state.TodoCompleted" Context="todo">
+            @if (state.TodoCompleted.Any())
+            {
+                <button class="btn btn-primary col-1 m-3" type="button" data-bs-toggle="collapse" data-bs-target="#complete" aria-expanded="false" aria-controls="complete">> Completed</button>
+                <div class="collapse" id="complete">
+                    <TableView Items="@state.TodoCompleted" Context="todo">
                     <TableHeading>
                         <tr>
                             <th scope="col" style="width : 5%" />
@@ -62,7 +64,7 @@ else
                     </TableBody>
                 </TableView>
             </div>
-
+            }
             <div>
                 <AddTodoForm OnSave="state.AddTodo" />
             </div>
