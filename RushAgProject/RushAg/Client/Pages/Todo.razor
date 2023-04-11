@@ -9,26 +9,37 @@
 }
 else
 {
-    <h3 class="mb-3">To Do List</h3>
+    <h3>@($"To Do List ")</h3><p>@($"({state.TodoCompleted.Count} / {state.TodoNotCompleted.Count + state.TodoCompleted.Count})")</p>
 
     @foreach(var todo in state.TodoNotCompleted)
     {
         <TodoView 
             Todo="@todo"
             OnDelete="@state.DeleteTodo"
-            OnToggleComplete="@state.ToggleComplete"/>    
+            OnToggleComplete="@state.ToggleComplete"
+            OnSaveTodoStep="state.AddStep" />    
     }
 
-    @foreach(var todo in state.TodoCompleted)
-    {
-        <TodoView Todo="@todo"
-          OnDelete="@state.DeleteTodo"
-          OnToggleComplete="@state.ToggleComplete" />
-    }
     <AddTodoForm OnSave="state.AddTodo" />
+    @if (state.TodoCompleted.Any())
+    {
+        <button class="btn btn-primary" @onclick="ToggleShowComplete">Show Complete</button>
+    }
+    @if (_showCompleted)
+    {
+        @foreach (var todo in state.TodoCompleted)
+        {
+            <TodoView Todo="@todo"
+                OnDelete="@state.DeleteTodo"
+                OnToggleComplete="@state.ToggleComplete" />
+        }
+
+    }
+    
 }
 
 @code {
+    private bool _showCompleted = false;
 
     protected override async Task OnInitializedAsync()
     {
@@ -47,4 +58,7 @@ else
         state.CurrentTodo = todo;
         StateHasChanged();
     }
+
+    private void ToggleShowComplete() => _showCompleted = !_showCompleted;
+
 }
