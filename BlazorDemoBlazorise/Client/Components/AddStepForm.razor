@@ -1,0 +1,26 @@
+﻿<EditForm Model="@todoStep" OnValidSubmit="SaveTodo">
+    <DataAnnotationsValidator />
+    <Blazorise.ValidationSummary />
+    <InputText id="name" class="form-control" @bind-Value="todoStep.Name" placeholder="Add a step..." />
+</EditForm>
+
+@code {
+    [Parameter]
+    public TodoItemDto TodoItem { get; set; } = default!;
+    [Parameter]
+    public EventCallback<CreateTodoStepDto> OnSave { get; set; }
+
+    private TodoStepDto todoStep = new();
+
+    private void SaveTodo()
+    {
+        TodoItem.Steps.Add(todoStep);
+        var createTodoStep = new CreateTodoStepDto()
+        {
+            Name = todoStep.Name,
+            TodoItemId = TodoItem.Id
+        };
+        OnSave.InvokeAsync(createTodoStep);
+        todoStep = new();
+    }
+}

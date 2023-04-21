@@ -1,0 +1,66 @@
+﻿@page "/todo"
+@inject TodoService todoService
+
+<PageTitle>To Do</PageTitle>
+
+@if (@todoService.IsLoading)
+{
+    <h3>Loading....</h3>
+}
+else
+{
+    <h3>@($"To Do List ")</h3>
+
+    <p>@($"({todoService.TodoCompleted.Count} / {todoService.TodoNotCompleted.Count + todoService.TodoCompleted.Count})")</p>
+
+    @foreach (var todo in todoService.TodoNotCompleted)
+    {
+        <TodoView 
+            Todo="@todo"
+            OnDelete="@todoService.DeleteTodo"
+            OnToggleComplete="@todoService.ToggleComplete"
+            OnSaveTodoStep="@todoService.AddStep" />    
+    }
+
+    <AddTodoForm OnSave="todoService.AddTodo" />
+    @if (todoService.TodoCompleted.Any())
+    {
+        <button class="btn btn-primary" @onclick="ToggleShowComplete">Show Complete</button>
+    }
+    @if (_showCompleted)
+    {
+        @foreach (var todo in todoService.TodoCompleted)
+        {
+            <TodoView Todo="@todo"
+                OnDelete="@todoService.DeleteTodo"
+                OnToggleComplete="@todoService.ToggleComplete" />
+        }
+
+    }
+    
+}
+
+@code {
+    private bool _showCompleted = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        todoService.OnChange += StateHasChanged;
+        await todoService.GetTodos();
+    }
+
+    private void CancelUpdate()
+    {
+        todoService.CurrentTodo = null;
+        StateHasChanged();
+    }
+
+    private void SetCurrentTodo(TodoItemDto todo)
+    {
+        todoService.CurrentTodo = todo;
+        StateHasChanged();
+    }
+
+    private void ToggleShowComplete() => _showCompleted = !_showCompleted;
+
+}

@@ -1,0 +1,24 @@
+﻿@typeparam TItem
+
+<table class="table table-striped">
+    <thead>
+        @TableHeading
+    </thead>
+    <tbody>
+        @foreach (TItem item in Items)
+        {
+            @TableBody(item)
+        }
+    </tbody>
+</table>
+
+@code {
+    [Parameter]
+    public RenderFragment TableHeading { get; set; }
+
+    [Parameter]
+    public RenderFragment<TItem> TableBody { get; set; }
+
+    [Parameter]
+    public IEnumerable<TItem> Items { get; set; }
+}
