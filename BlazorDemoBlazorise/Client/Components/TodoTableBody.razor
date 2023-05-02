@@ -1,0 +1,51 @@
+﻿@inject TodoService todoService
+
+<TableRow>
+    <TableRowHeader>
+        <Div Flex="Flex.AlignItems.Center">
+            <Div Padding="Padding.Is2">
+                <Check TValue="bool"
+                       Checked="@Todo.IsComplete"
+                       CheckedChanged="@(() => todoService.ToggleComplete(Todo))" />
+            </Div>
+        </Div>
+    </TableRowHeader>
+    <TableRowCell>
+        <Div Flex="Flex.AlignItems.Center">
+            <Div Padding="Padding.Is2">
+                @Todo.Name
+            </Div>
+        </Div>
+    </TableRowCell>
+    <TableRowCell>
+        <Div Flex="Flex.AlignItems.Center">
+            <Div Padding="Padding.Is2">
+                @Todo.CreateDate
+            </Div>
+        </Div>
+    </TableRowCell>
+    @if (ShowCompleteDate)
+    {
+        <TableRowCell>
+            <Div Flex="Flex.AlignItems.Center">
+                <Div Padding="Padding.Is2">
+                    @Todo.CompleteDate
+                </Div>
+            </Div>
+        </TableRowCell>
+    }
+    <TableRowCell>
+        <Button Margin="Margin.Is0" Color="Color.Danger" Outline Clicked="() => todoService.DeleteTodo(Todo)">
+            <Span Padding="Padding.Is0">
+                <Icon Name="IconName.Delete" />
+            </Span>
+        </Button>
+    </TableRowCell>
+</TableRow>
+
+@code {
+    [Parameter]
+    public TodoItemDto Todo { get; set; }
+    [Parameter]
+    public bool ShowCompleteDate { get; set; } = false;
+}

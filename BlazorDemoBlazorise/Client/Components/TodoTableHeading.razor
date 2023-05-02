@@ -1,0 +1,15 @@
+﻿<TableRow>
+    <TableHeaderCell></TableHeaderCell>
+    <TableHeaderCell>Name</TableHeaderCell>
+    <TableHeaderCell>Create Date</TableHeaderCell>
+    @if(ShowCompleteDate)
+    {
+        <TableHeaderCell>Completed Date</TableHeaderCell>
+    }
+    <TableHeaderCell></TableHeaderCell>
+</TableRow>
+
+@code {
+    [Parameter]
+    public bool ShowCompleteDate { get; set; } = false;
+}
