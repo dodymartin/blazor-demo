@@ -1,6 +1,6 @@
 ﻿<EditForm Model="@todoStep" OnValidSubmit="SaveTodo">
     <DataAnnotationsValidator />
-    <Blazorise.ValidationSummary />
+    <ValidationSummary />
     <InputText id="name" class="form-control" @bind-Value="todoStep.Name" placeholder="Add a step..." />
 </EditForm>
 

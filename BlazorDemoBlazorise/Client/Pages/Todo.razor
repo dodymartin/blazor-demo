@@ -9,8 +9,6 @@
 }
 else
 {
-    <Div>
-    <Div>
     <h4>@($"To Do List ")</h4>
 
     <p>@($"({todoService.TodoCompleted.Count} / {todoService.TodoNotCompleted.Count + todoService.TodoCompleted.Count})")</p>
@@ -22,48 +20,46 @@ else
             <TodoTableHeading />
         </TableHeading>
         <TableBody>
-            <TodoTableBody Todo="@todo" />    
+            <TodoTableBody Todo="@todo" />
         </TableBody>
     </TableView>
 
     @if (todoService.TodoCompleted.Any())
     {
-        <Button Color="Color.Primary" Outline Clicked="ToggleShowComplete">
-        Show Complete
-            <Span Padding="Padding.Is0">
-                @if(_showCompleted)
+        <button class="btn btn-primary" @onclick="ToggleShowComplete">
+            Show Complete
+            <span class="p-0">
+                @if (_showCompleted)
                 {
-                    <Icon Name="IconName.AngleDown" />
+                    <icon />
                 }
                 else
                 {
-                    <Icon Name="IconName.AngleRight" />
+                    <icon />
                 }
-            </Span>
-            
-        </Button>
-    }
-    @if (_showCompleted)
-    {
-        <TableView Items="@todoService.TodoCompleted"
-                   Context="todo"
-                   TItem="TodoItemDto">
-            <TableHeading>
-                <TodoTableHeading ShowCompleteDate="@true"/>
-            </TableHeading>
-            <TableBody>
-                <TodoTableBody Todo="@todo" 
-                               ShowCompleteDate="@true"/>
-            </TableBody>
-        </TableView>
+            </span>
 
+        </button>
+
+        @if (_showCompleted)
+        {
+            <TableView Items="@todoService.TodoCompleted"
+           Context="todo"
+           TItem="TodoItemDto">
+                <TableHeading>
+                    <TodoTableHeading ShowCompleteDate="@true" />
+                </TableHeading>
+                <TableBody>
+                    <TodoTableBody Todo="@todo"
+                       ShowCompleteDate="@true" />
+                </TableBody>
+            </TableView>
+
+        }
     }
-    </Div>
-    <Column Position="Position.Fixed.Bottom.Is0"
-         ColumnSize="ColumnSize.Is12">
-        <AddTodoForm OnSave="todoService.AddTodo"/>
-    </Column>
-    </Div>
+    <div class="position-fixed">
+        <AddTodoForm OnSave="todoService.AddTodo" />
+    </div>
 }
 
 @code {

@@ -15,10 +15,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Client\BlazorDemoBlazorise.Client.csproj" />
-    <ProjectReference Include="..\Infrastructure\RushAg.Infrastructure.csproj" />
-    <ProjectReference Include="..\RushAg.Core\RushAg.Core.csproj" />
-    <ProjectReference Include="..\Shared\BlazorDemoBlazorise.Shared.csproj" />
+    <ProjectReference Include="..\Client\BlazorDemo.Client.csproj" />
+    <ProjectReference Include="..\Infrastructure\BlazorDemo.Infrastructure.csproj" />
+    <ProjectReference Include="..\RushAg.Core\BlazorDemo.Core.csproj" />
+    <ProjectReference Include="..\Shared\BlazorDemo.Shared.csproj" />
   </ItemGroup>
 
 

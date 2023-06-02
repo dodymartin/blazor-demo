@@ -1,47 +1,42 @@
 ﻿@inject TodoService todoService
 
-<TableRow>
-    <TableRowHeader>
-        <Div Flex="Flex.AlignItems.Center">
-            <Div Padding="Padding.Is2">
-                <Check TValue="bool"
-                       Checked="@Todo.IsComplete"
-                       CheckedChanged="@(() => todoService.ToggleComplete(Todo))" />
-            </Div>
-        </Div>
-    </TableRowHeader>
-    <TableRowCell>
-        <Div Flex="Flex.AlignItems.Center">
-            <Div Padding="Padding.Is2">
-                @Todo.Name
-            </Div>
-        </Div>
-    </TableRowCell>
-    <TableRowCell>
-        <Div Flex="Flex.AlignItems.Center">
-            <Div Padding="Padding.Is2">
-                @Todo.CreateDate
-            </Div>
-        </Div>
-    </TableRowCell>
+<tr>
+    <td>
+        <div>
+            <div>
+                <input @key="Todo"
+                       type="checkbox" 
+                       checked="@Todo.IsComplete"
+                       @onchange="() => todoService.ToggleComplete(Todo)" />
+            </div>
+        </div>
+    </td>
+    <td>
+        <div>
+            @Todo.Name
+        </div>
+    </td>
+    <td>
+        <div>
+            @Todo.CreateDate
+        </div>
+    </td>
     @if (ShowCompleteDate)
     {
-        <TableRowCell>
-            <Div Flex="Flex.AlignItems.Center">
-                <Div Padding="Padding.Is2">
-                    @Todo.CompleteDate
-                </Div>
-            </Div>
-        </TableRowCell>
+        <td>
+            <div>
+                @Todo.CompleteDate
+            </div>
+        </td>
     }
-    <TableRowCell>
-        <Button Margin="Margin.Is0" Color="Color.Danger" Outline Clicked="() => todoService.DeleteTodo(Todo)">
-            <Span Padding="Padding.Is0">
-                <Icon Name="IconName.Delete" />
-            </Span>
-        </Button>
-    </TableRowCell>
-</TableRow>
+    <td>
+        <button class="btn btn-danger" @onclick="() => todoService.DeleteTodo(Todo)">
+            <span>
+                <icon class="oi oi-trash"/>
+            </span>
+        </button>
+    </td>
+</tr>
 
 @code {
     [Parameter]

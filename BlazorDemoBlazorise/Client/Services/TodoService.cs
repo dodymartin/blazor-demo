@@ -1,7 +1,7 @@
-﻿using BlazorDemoBlazorise.Shared;
+﻿using BlazorDemo.Shared;
 using System.Net.Http.Json;
 
-namespace BlazorDemoBlazorise.Client.Services
+namespace BlazorDemo.Client.Services
 {
     public class TodoService
     {

@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace RushAg.Infrastructure.Migrations
+namespace BlazorDemo.Infrastructure.Migrations
 {
     public partial class removeParentNavigation : Migration
     {

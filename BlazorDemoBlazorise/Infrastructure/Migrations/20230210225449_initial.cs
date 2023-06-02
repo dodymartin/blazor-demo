@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace RushAg.Infrastructure.Migrations
+namespace BlazorDemo.Infrastructure.Migrations
 {
     public partial class initial : Migration
     {

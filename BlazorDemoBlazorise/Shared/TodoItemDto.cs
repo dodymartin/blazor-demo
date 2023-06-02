@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BlazorDemoBlazorise.Shared
+namespace BlazorDemo.Shared
 {
     public class TodoItemDto
     {

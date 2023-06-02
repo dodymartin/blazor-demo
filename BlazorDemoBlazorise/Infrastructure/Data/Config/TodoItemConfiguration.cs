@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using RushAg.Core.Entities;
+using BlazorDemo.Core.Entities;
 
-namespace RushAg.Infrastructure.Data.Config
+namespace BlazorDemo.Infrastructure.Data.Config
 {
     public class TodoItemConfiguration : IEntityTypeConfiguration<TodoItem>
     {

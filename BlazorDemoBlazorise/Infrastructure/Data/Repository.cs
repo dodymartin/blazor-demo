@@ -1,19 +1,19 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using RushAg.Core.Entities;
-using RushAg.Core.Interfaces;
+using BlazorDemo.Core.Entities;
+using BlazorDemo.Core.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RushAg.Infrastructure.Data
+namespace BlazorDemo.Infrastructure.Data
 {
     public class Repository : IRepository
     {
-        private readonly RushAgDbContext _dbContext;
+        private readonly BlazorDemoDbContext _dbContext;
 
-        public Repository(RushAgDbContext dbContext)
+        public Repository(BlazorDemoDbContext dbContext)
         {
             _dbContext = dbContext;
         }

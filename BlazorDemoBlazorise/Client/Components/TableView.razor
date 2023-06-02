@@ -1,16 +1,16 @@
 ﻿@typeparam TItem
 
-<Table Striped>
-    <TableHeader>
+<table class="table table-striped">
+    <thead>
         @TableHeading
-    </TableHeader>
-    <TableBody>
+    </thead>
+    <tbody>
         @foreach (TItem item in Items)
         {
             @TableBody(item)
         }
-    </TableBody>
-</Table>
+    </tbody>
+</table>
 
 @code {
     [Parameter]

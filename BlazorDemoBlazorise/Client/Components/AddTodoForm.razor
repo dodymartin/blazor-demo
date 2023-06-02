@@ -1,9 +1,9 @@
 ﻿<EditForm Model="@Todo" OnValidSubmit="SaveTodo">
     <DataAnnotationsValidator />
-    <Blazorise.ValidationSummary />
-    <Field>
-        <TextEdit id="name" @bind-Text="Todo.Name" Placeholder="Add a task..."/>
-    </Field>
+    <ValidationSummary />
+
+    <InputText id="name" @bind-Value="Todo.Name" Placeholder="Add a task..." />
+
 </EditForm>
 
 @code {

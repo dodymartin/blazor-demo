@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RushAg.Core.Entities;
+namespace BlazorDemo.Core.Entities;
 
 public partial class TodoStep
 {

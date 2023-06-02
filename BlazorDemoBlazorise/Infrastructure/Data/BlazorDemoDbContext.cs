@@ -1,12 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using RushAg.Core.Entities;
+using BlazorDemo.Core.Entities;
 using System.Reflection;
 
-namespace RushAg.Infrastructure.Data
+namespace BlazorDemo.Infrastructure.Data
 {
-    public class RushAgDbContext : DbContext
+    public class BlazorDemoDbContext : DbContext
     {
-        public RushAgDbContext(DbContextOptions<RushAgDbContext> options)
+        public BlazorDemoDbContext(DbContextOptions<BlazorDemoDbContext> options)
             : base(options)
         { }
         public DbSet<TodoItem> TodoItems { get; set; }

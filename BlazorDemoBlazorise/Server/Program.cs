@@ -1,7 +1,8 @@
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
-using RushAg.Core.Interfaces;
-using RushAg.Infrastructure.Data;
+using BlazorDemo.Core.Interfaces;
+using BlazorDemo.Infrastructure.Data;
+using BlazorDemo.Server.Api;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,7 +12,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 
 var connectionString = builder.Configuration.GetConnectionString("RushAgDb");
-builder.Services.AddDbContext<RushAgDbContext>(options =>
+builder.Services.AddDbContext<BlazorDemoDbContext>(options =>
     options.UseSqlServer(connectionString));
 
 builder.Services.AddScoped<IRepository,Repository>();
@@ -37,9 +38,10 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.AddTodoApis();
 
 app.MapRazorPages();
-app.MapControllers();
+//app.MapControllers();
 app.MapFallbackToFile("index.html");
 
 app.Run();

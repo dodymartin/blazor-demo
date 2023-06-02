@@ -5,13 +5,13 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using RushAg.Infrastructure.Data;
+using BlazorDemo.Infrastructure.Data;
 
 #nullable disable
 
-namespace RushAg.Infrastructure.Migrations
+namespace BlazorDemo.Infrastructure.Migrations
 {
-    [DbContext(typeof(RushAgDbContext))]
+    [DbContext(typeof(BlazorDemoDbContext))]
     [Migration("20230211161331_removeParentNavigation")]
     partial class removeParentNavigation
     {
