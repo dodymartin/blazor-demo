@@ -3,6 +3,7 @@ using BlazorDemo.Core.Entities;
 using BlazorDemo.Core.Interfaces;
 using BlazorDemo.Shared;
 using Microsoft.AspNetCore.Mvc;
+using System.Reflection.Metadata.Ecma335;
 
 namespace BlazorDemo.Server.Api
 {
@@ -10,18 +11,35 @@ namespace BlazorDemo.Server.Api
     {
         public static WebApplication AddTodoApis(this WebApplication app)
         {
-
-           var todoGroup = app.MapGroup("/api/todo");
+            var callNumber = 0;
+            var todoGroup = app.MapGroup("/api/todo");
 
             //api/todo
             todoGroup.MapGet("/", async (IRepository repo) =>
                 await repo.GetAllAsync());
 
             todoGroup.MapGet("/{id}", async (int id, IRepository repo) =>
-                await repo.GetByIdAsync(id) 
-                    is TodoItem todo 
-                    ? Results.Ok(todo) 
+                await repo.GetByIdAsync(id)
+                    is TodoItem todo
+                    ? Results.Ok(todo)
                     : Results.NotFound());
+
+            todoGroup.MapGet("/polly-test", async (IRepository repo) =>
+            {
+                Console.WriteLine($"{DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss.fff")}-{callNumber} polly-test called");
+                if (callNumber % 5 == 0)
+                {
+                    callNumber++;
+                    var items = await repo.GetAllAsync();
+                    return Results.Ok(items);
+                }
+                else
+                {
+                    callNumber++;
+                    //await Task.Delay(20000);
+                    return Results.StatusCode(StatusCodes.Status500InternalServerError);
+                }
+            });
 
             //TODO: Write a query instead of using GetAll
             todoGroup.MapPost("/", async (CreateTodoItemDto todo, IRepository repo) =>
@@ -47,7 +65,7 @@ namespace BlazorDemo.Server.Api
                 return Results.Ok(dto);
             });
 
-            todoGroup.MapPut("/{id}", async (int id, [FromBody]UpdateTodoItemDto request, [FromServices]IRepository repo) =>
+            todoGroup.MapPut("/{id}", async (int id, [FromBody] UpdateTodoItemDto request, [FromServices] IRepository repo) =>
             {
                 if (request == null)
                     return Results.BadRequest();
@@ -58,7 +76,7 @@ namespace BlazorDemo.Server.Api
 
                 toUpdate.Update(request.Name, request.Notes);
                 var updatedTodo = await repo.UpdateAsync(toUpdate);
-                
+
                 return Results.Ok(updatedTodo);
             });
 

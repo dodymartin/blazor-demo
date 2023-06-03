@@ -3,10 +3,11 @@ using System.Net.Http.Json;
 
 namespace BlazorDemo.Client.Services
 {
-    public class TodoService
+    public sealed class TodoService : IDisposable
     {
         public event Action OnChange;
-        private readonly HttpClient _httpClient;
+        private readonly HttpClient _httpClient = null;
+        private readonly ILogger<TodoService> _logger = null;
 
         private List<TodoItemDto> _todoItems = new();
         public List<TodoItemDto> TodoNotCompleted = new();
@@ -14,9 +15,22 @@ namespace BlazorDemo.Client.Services
         public TodoItemDto? CurrentTodo = null;
         public bool IsLoading = true;
 
-        public TodoService(HttpClient http)
+        public TodoService(HttpClient httpClient, ILogger<TodoService> logger)
         {
-            _httpClient = http;
+            _httpClient = httpClient;
+            _logger = logger;
+        }
+
+        public async Task PollyTest()
+        {
+            try
+            {
+                var x = await _httpClient.GetFromJsonAsync<List<TodoItemDto>>("api/todo/polly-test");
+            }
+            catch (Exception ex) 
+            { 
+                Console.WriteLine(ex.ToString());
+            }
         }
 
         public async Task GetTodos()
@@ -108,5 +122,7 @@ namespace BlazorDemo.Client.Services
         }
 
         private void NotifyStateChanged() => OnChange?.Invoke();
+
+        public void Dispose() => _httpClient?.Dispose();
     }
 }

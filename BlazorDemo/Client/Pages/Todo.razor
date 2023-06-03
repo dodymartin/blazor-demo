@@ -11,6 +11,8 @@ else
 {
     <h4>@($"To Do List ")</h4>
 
+    <button class="btn btn-danger" @onclick="PollyTest">Polly Test</button>
+
     <p>@($"({todoService.TodoCompleted.Count} / {todoService.TodoNotCompleted.Count + todoService.TodoCompleted.Count})")</p>
 
     <TableView Items="@todoService.TodoNotCompleted"
@@ -69,6 +71,11 @@ else
     {
         todoService.OnChange += StateHasChanged;
         await todoService.GetTodos();
+    }
+
+    private async Task PollyTest()
+    {
+        await todoService.PollyTest();
     }
 
     private void CancelUpdate()
