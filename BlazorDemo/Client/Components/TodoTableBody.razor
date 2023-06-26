@@ -4,7 +4,7 @@
     <td>
         <div>
             <div>
-                <input @key="Todo"
+                <input @key="Todo.Id"
                        type="checkbox" 
                        checked="@Todo.IsComplete"
                        @onchange="() => todoService.ToggleComplete(Todo)" />
@@ -43,4 +43,9 @@
     public TodoItemDto Todo { get; set; }
     [Parameter]
     public bool ShowCompleteDate { get; set; } = false;
+
+    protected override void OnInitialized()
+    {
+        todoService.OnChange += StateHasChanged;
+    }
 }
